@@ -82,11 +82,11 @@ theme_layout:
 # -------------------------------------------------------
 
 social:
-  github: https://github.com/heskeybaozi
-  weibo: http://weibo.com/52hezhiyu
+  github: https://github.com/DovierQAQ
+  weibo: http://weibo.com/
 
   # Email link, reference to https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Creating_hyperlinks#E-mail_links
-  email: mailto:hezhiyu233@foxmail.com
+  email: mailto:guofan@ustc.edu
 
 
 social_icons:
@@ -146,5 +146,5 @@ google_analytics:
 # powered_by: false
 # powered_by: ''
 powered_by:
-  text:  Hexo Theme Lite
-  url:  https://github.com/HeskeyBaozi/hexo-theme-lite/ # or false to disable link
+  text:  GuoFan
+  url:  false # or false to disable link

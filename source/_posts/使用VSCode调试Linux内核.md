@@ -2,6 +2,12 @@
 title: 使用VSCode调试Linux内核
 date: 2023-03-23 22:53:49
 tags:
+    - linux
+    - kernel
+    - vscode
+categories:
+    - 课程实验
+    - linux操作系统分析
 ---
 
 ![](./使用VSCode调试Linux内核/图片12.png)

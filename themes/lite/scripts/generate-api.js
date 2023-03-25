@@ -59,7 +59,10 @@ function generator(cfg, site) {
       pages: true,
     },
 
-    posts = site.posts.sort('-date').filter(function (post) {
+    // posts = site.posts.sort('-date').filter(function (post) {
+    //   return post.published;
+    // }),
+    posts = site.posts.filter(function (post) {
       return post.published;
     }),
 

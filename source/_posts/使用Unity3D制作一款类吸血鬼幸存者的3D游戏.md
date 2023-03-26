@@ -1,7 +1,8 @@
 ---
-title: 使用Unity3D制作一款类吸血鬼幸存者的3D游戏 - 角色篇
+title: 【置顶】使用Unity3D制作一款类吸血鬼幸存者的3D游戏 - 角色篇
 date: 2023-03-25 13:34:51
 updated: 2023-03-25 13:34:51
+top: 10
 tags:
     - Unity3D
     - C#
@@ -205,16 +206,206 @@ public override void Die()
 
 注意到我们重写了Die方法，里面用到了AudioManager的单例，以后我们会单独开一个章节讲AudioManager。
 
+### 粒子效果
 Recover方法中用到了粒子效果，该效果的参数如下：（角色拾取恢复道具时围绕在角色周围的粉红色粒子效果）
 ![](./使用Unity3D制作一款类吸血鬼幸存者的3D游戏/recover_effect_params.png)
 ![](./使用Unity3D制作一款类吸血鬼幸存者的3D游戏/recover_effect_params2.png)
+
+### UI
+另外，对于血条，这里采用UI的实现方式。Backing是一层半透明的黑色背景层，Bar是血条本体，这些内容放在UI的Canvas的Fight UI中。
+![](./使用Unity3D制作一款类吸血鬼幸存者的3D游戏/health_ui.png)
+UI的Canvas有一个脚本GameUI.cs，专门用来控制游戏中所有UI的控制。public的成员可以从Unity中拖动对象到脚本属性中来初始化，当然也可以像player一样在代码中初始化，不过这就要考虑到找不到的情况了，各有应用的场景。
+
+GameUI.cs
+```C#
+public RectTransform healthBar;
+Player player;
+
+void Start()
+{
+    player = FindObjectOfType<Player>();
+    if (player != null)
+    {
+        // ...
+    }
+}
+
+private void Update()
+{
+    UpdateFightUI();
+}
+
+void UpdateFightUI()
+{
+    float healthPercent = 0;
+    if (player != null)
+    {
+        healthPercent = player.health / player.startingHealth;
+    }
+    healthBar.localScale = new Vector3(healthPercent, 1, 1);
+}
+```
+
+### 特殊
+还有一些比较特别的场景也需要操作角色的生命值。这些就具体游戏具体实现了吧，这里给些小参考。
+比如说角色掉出了地图之外，需要有重新正常进行游戏的机制，这里检测角色的y坐标，小于一定程度就判断为角色掉出地图外，直接扣除所有生命值。
+Player.cs
+```C#
+void Update()
+{
+    // fall to die
+    if (transform.position.y < -10)
+    {
+        TakeDamage(health);
+    }
+}
+```
+
+又比如说新关卡开启时，角色的状态应该是满的，所以在Player这里接收关卡控制器（以后讲）的新关卡事件。
+```C#
+private void Awake()
+{
+    FindObjectOfType<EnemySpawner>().OnNewStage += OnNewStage;
+}
+
+void OnNewStage(EnemySpawner.Stage stage)
+{
+    health = startingHealth;
+}
+```
 
 ------------------------
 
 ## 3. 镜头控制
 
+对于俯视角射击游戏来说，镜头的控制比较简单，只需要镜头跟着角色移动就行了，第三人称游戏那些镜头遮挡问题暂时不会涉及。
+教程中的镜头只有跟随角色移动的部分，不过有了挺进地牢的游戏体验，如果镜头在跟随角色移动的过程中，也可以因为准心的不同方向而稍微偏移到那个方向，体验上会直观很多。我的版本实现了这个特性。
+
+PlayerController中加入LookAt方法，Player每一帧获取鼠标的位置，以此坐标调用PlayerController的LookAt方法，该方法会改变角色的朝向，让角色看向准心位置，再调用CameraMovement方法移动摄像机。
+CameraMovement方法先是计算准心与角色之间的距离，将这个距离限制到10单位之内，换算成10单位的百分比，插值到sightDistanceMinMax中设置的镜头偏移最大最小值中。这个sightDistanceMinMax是在脚本属性页面设置的。
+
+PlayerController.cs
+```C#
+public Vector2 sightDistanceMinMax;
+
+Vector3 cameraOffset;
+
+void Start()
+{
+    cameraOffset = Camera.main.transform.position;
+}
+
+public void LookAt(Vector3 lookPoint)
+{
+    Vector3 heightCorrectedPoint = new Vector3(lookPoint.x, transform.position.y, lookPoint.z);
+    transform.LookAt(heightCorrectedPoint);
+
+    CameraMovement(heightCorrectedPoint);
+}
+
+void CameraMovement(Vector3 heightCorrectedPoint)
+{
+    Vector3 lookDirection = heightCorrectedPoint - transform.position;
+    float lookDistance = Mathf.Lerp(sightDistanceMinMax.x, sightDistanceMinMax.y,
+        Mathf.Clamp(lookDirection.magnitude, 0, 10) / 10);
+    Camera.main.transform.position = transform.position + cameraOffset + lookDirection.normalized * lookDistance;
+}
+```
+
+Player.cs
+```C#
+void Update()
+{
+    // look input
+    Ray ray = viewCamera.ScreenPointToRay(Input.mousePosition);
+    Plane groundPlane = new Plane(Vector3.up, Vector3.up * gunController.GunHeight);
+    if (Time.timeScale > 0 && groundPlane.Raycast(ray, out float rayDistance))
+    {
+        Vector3 point = ray.GetPoint(rayDistance);
+        // Debug.DrawLine(ray.origin, point, Color.red);
+        controller.LookAt(point);
+    }
+}
+```
+
 ------------------------
 
 ## 4. 准心显示
 
+准心由两个部分组成，中心小圆点和外围轮廓。各个部分有不同作用：
+- 小圆点在检测到敌人时会改变颜色，提示可以进行攻击；
+- 外围轮廓有缩放以及旋转的动画，让玩家能更容易找到准心的位置，不至于在很乱的游戏场景中丢失了准心。
 
+![](./使用Unity3D制作一款类吸血鬼幸存者的3D游戏/crosshair_struct.png)
+
+为准心添加上Crosshairs.cs脚本，用来控制其动画效果。
+Crosshairs.cs
+```C#
+public class Crosshairs : MonoBehaviour
+{
+    public LayerMask targetMask;
+    public SpriteRenderer dot;
+    public Transform crosshair;
+    public Color dotHighlightColor;
+
+    Color originalDotColor;
+    Vector3 originalCrosshairScale;
+
+    private void Start()
+    {
+        originalDotColor = dot.color;
+        originalCrosshairScale = crosshair.localScale;
+    }
+
+    void Update()
+    {
+        transform.Rotate(Vector3.up * 40 * Time.deltaTime);
+        float percent = Mathf.PingPong(Time.time, 1);
+        crosshair.localScale = Vector3.Lerp(originalCrosshairScale, originalCrosshairScale + Vector3.one * .04f, percent);
+    }
+
+    public void DetectTargets(Ray ray)
+    {
+        if (Physics.Raycast(ray, 100, targetMask))
+        {
+            dot.color = dotHighlightColor;
+        }
+        else
+        {
+            dot.color = originalDotColor;
+        }
+    }
+}
+```
+
+### 渲染
+
+此时虽然能显示准心了，可是发现准心会跟场景中的物体进行交互，准心移动到场景中的物体背面时会出现遮挡的现象。
+要实现准心始终渲染到最顶层，有一个好的方法是将准心与UI放到一起去渲染。
+
+- 添加一个Layer叫做UI，修改准心对象的Layer为UI
+- 修改摄像机的Culling Mask，去除其中的UI
+- 添加一个摄像机，作为主摄像机的子对象，该摄像机的参数设置如下：
+
+![](./使用Unity3D制作一款类吸血鬼幸存者的3D游戏/crosshair_camera.png)
+
+### 位置
+
+由于准心的位置需要跟玩家鼠标的输入绑定，而玩家的输入是在Player中处理的，所以将准心的移动代码写到这里。
+
+Player.cs
+```C#
+public Crosshairs crosshairs;
+
+// look input
+if (Time.timeScale > 0 && groundPlane.Raycast(ray, out float rayDistance))
+{
+    // ...
+    crosshairs.transform.position = point;
+    crosshairs.DetectTargets(ray);
+}
+```
+
+------------------------
+
+角色篇先写这么多，接下来写地图篇。篇章顺序应是从最通用到最不通用。

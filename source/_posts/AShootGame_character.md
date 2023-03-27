@@ -1,8 +1,8 @@
 ---
-title: 【置顶】使用Unity3D制作一款类吸血鬼幸存者的3D游戏 - 角色篇
+title: 使用Unity3D制作一款类吸血鬼幸存者的3D游戏 - 角色篇
 date: 2023-03-25 13:34:51
 updated: 2023-03-25 13:34:51
-top: 10
+sticky: 10
 tags:
     - Unity3D
     - C#
@@ -20,10 +20,6 @@ src="//player.bilibili.com/player.html?aid=269009801&bvid=BV1wc411L78j&cid=10703
 scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" 
 style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;"> </iframe></div>
 
-<!-- more -->
-
-![](./使用Unity3D制作一款类吸血鬼幸存者的3D游戏/enemy_cover.png)
-
 学习Unity3D过程中做的第一个项目，项目主体框架是照着这个教程做的：
 https://www.youtube.com/playlist?list=PLFt_AvWsXl0ctd4dgE1F8g3uec4zKNRV0
 后续增加了道具拾取以及升级的功能。
@@ -35,20 +31,14 @@ https://www.youtube.com/playlist?list=PLFt_AvWsXl0ctd4dgE1F8g3uec4zKNRV0
 
 本篇为系列的角色篇，目标是回顾完这一篇章之后可以做出来一个功能齐全的角色，经过一定程度的针对性扩展可以让这个角色出现在不同的游戏中。
 
-**目录**
-1. 角色控制
-2. 角色生命
-3. 镜头控制
-4. 准心显示
-
 ------------------------
 
-## 1. 角色控制
+## 角色控制
 
 给角色添加Collider以及Rigidbody，并在角色身上添加Player.cs，以后对于角色的按键输入都由Player.cs来处理。
 记得锁定角色旋转以防角色“过分”的物理模拟。
 
-![](./使用Unity3D制作一款类吸血鬼幸存者的3D游戏/player_components.png)
+![](./AShootGame_character/player_components.png)
 
 为角色添加PlayerController.cs脚本，该脚本负责角色的移动。
 
@@ -97,7 +87,7 @@ void Update()
 
 ------------------------
 
-## 2. 角色生命
+## 角色生命
 
 注意到生命值这个属性，无论是对于角色，还是对于敌人都是可用的，所以新建一个父类，叫做LivingEntity，新建一个接口，叫做IDamageable。
 
@@ -208,12 +198,12 @@ public override void Die()
 
 ### 粒子效果
 Recover方法中用到了粒子效果，该效果的参数如下：（角色拾取恢复道具时围绕在角色周围的粉红色粒子效果）
-![](./使用Unity3D制作一款类吸血鬼幸存者的3D游戏/recover_effect_params.png)
-![](./使用Unity3D制作一款类吸血鬼幸存者的3D游戏/recover_effect_params2.png)
+![](./AShootGame_character/recover_effect_params.png)
+![](./AShootGame_character/recover_effect_params2.png)
 
 ### UI
 另外，对于血条，这里采用UI的实现方式。Backing是一层半透明的黑色背景层，Bar是血条本体，这些内容放在UI的Canvas的Fight UI中。
-![](./使用Unity3D制作一款类吸血鬼幸存者的3D游戏/health_ui.png)
+![](./AShootGame_character/health_ui.png)
 UI的Canvas有一个脚本GameUI.cs，专门用来控制游戏中所有UI的控制。public的成员可以从Unity中拖动对象到脚本属性中来初始化，当然也可以像player一样在代码中初始化，不过这就要考虑到找不到的情况了，各有应用的场景。
 
 GameUI.cs
@@ -276,7 +266,7 @@ void OnNewStage(EnemySpawner.Stage stage)
 
 ------------------------
 
-## 3. 镜头控制
+## 镜头控制
 
 对于俯视角射击游戏来说，镜头的控制比较简单，只需要镜头跟着角色移动就行了，第三人称游戏那些镜头遮挡问题暂时不会涉及。
 教程中的镜头只有跟随角色移动的部分，不过有了挺进地牢的游戏体验，如果镜头在跟随角色移动的过程中，也可以因为准心的不同方向而稍微偏移到那个方向，体验上会直观很多。我的版本实现了这个特性。
@@ -330,13 +320,13 @@ void Update()
 
 ------------------------
 
-## 4. 准心显示
+## 准心显示
 
 准心由两个部分组成，中心小圆点和外围轮廓。各个部分有不同作用：
 - 小圆点在检测到敌人时会改变颜色，提示可以进行攻击；
 - 外围轮廓有缩放以及旋转的动画，让玩家能更容易找到准心的位置，不至于在很乱的游戏场景中丢失了准心。
 
-![](./使用Unity3D制作一款类吸血鬼幸存者的3D游戏/crosshair_struct.png)
+![](./AShootGame_character/crosshair_struct.png)
 
 为准心添加上Crosshairs.cs脚本，用来控制其动画效果。
 Crosshairs.cs
@@ -387,7 +377,7 @@ public class Crosshairs : MonoBehaviour
 - 修改摄像机的Culling Mask，去除其中的UI
 - 添加一个摄像机，作为主摄像机的子对象，该摄像机的参数设置如下：
 
-![](./使用Unity3D制作一款类吸血鬼幸存者的3D游戏/crosshair_camera.png)
+![](./AShootGame_character/crosshair_camera.png)
 
 ### 位置
 

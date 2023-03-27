@@ -10,7 +10,7 @@ categories:
     - linux操作系统分析
 ---
 
-![](./linuxanalyze_lab1/图片12.png)
+![](图片12.png)
 
 环境：Ubuntu-18.04
 
@@ -39,9 +39,9 @@ lucas@ubuntu:~/Desktop/lab3$ cd linux-5.4.34/
 lucas@ubuntu:~/Desktop/lab3/linux-5.4.34$ make defconfig
 lucas@ubuntu:~/Desktop/lab3/linux-5.4.34$ make menuconfig
 ```
-![](./linuxanalyze_lab1/图片1.png)
-![](./linuxanalyze_lab1/图片2.png)
-![](./linuxanalyze_lab1/图片3.png)
+![](图片1.png)
+![](图片2.png)
+![](图片3.png)
 
 ### 4. 编译和运行
 
@@ -49,7 +49,7 @@ lucas@ubuntu:~/Desktop/lab3/linux-5.4.34$ make menuconfig
 lucas@ubuntu:~/Desktop/lab3/linux-5.4.34$ make -j$(nproc)
 lucas@ubuntu:~/Desktop/lab3/linux-5.4.34$ qemu-system-x86_64 -kernel arch/x86/boot/bzImage
 ```
-![](./linuxanalyze_lab1/图片4.png)
+![](图片4.png)
 
 ### 5. 制作根文件系统
 
@@ -62,7 +62,7 @@ lucas@ubuntu:~/Desktop/lab3/linux-5.4.34$ cd busybox-1.31.1
 lucas@ubuntu:~/Desktop/lab3/linux-5.4.34/busybox-1.31.1$ make menuconfig
 ```
 配置静态编译
-![](./linuxanalyze_lab1/图片5.png)
+![](图片5.png)
 
 ```
 lucas@ubuntu:~/Desktop/lab3/linux-5.4.34/busybox-1.31.1$ make -j$(nproc) && make install
@@ -84,7 +84,7 @@ lucas@ubuntu:~/Desktop/lab3/linux-5.4.34/rootfs$ touch init
 lucas@ubuntu:~/Desktop/lab3/linux-5.4.34/rootfs$ sudo apt install vim
 lucas@ubuntu:~/Desktop/lab3/linux-5.4.34/rootfs$ vim init
 ```
-![](./linuxanalyze_lab1/图片6.png)
+![](图片6.png)
 其中mount命令是对proc和sys进行挂载，为init添加执行权限：
 ```
 lucas@ubuntu:~/Desktop/lab3/linux-5.4.34/rootfs$ chmod +x init
@@ -98,13 +98,13 @@ lucas@ubuntu:~/Desktop/lab3/linux-5.4.34/rootfs$ find . -print0 | cpio --null -o
 lucas@ubuntu:~/Desktop/lab3/linux-5.4.34/rootfs$ cd ..
 lucas@ubuntu:~/Desktop/lab3/linux-5.4.34$ qemu-system-x86_64 -kernel ./arch/x86/boot/bzImage -initrd rootfs.cpio.gz
 ```
-![](./linuxanalyze_lab1/图片7.png)
+![](图片7.png)
 成功！
 
 ### 5. 配置VSCode
 
 从应用商店安装VSCode
-![](./linuxanalyze_lab1/图片8.png)
+![](图片8.png)
 
 打开VSCode
 ```
@@ -112,7 +112,7 @@ lucas@ubuntu:~/Desktop/lab3/linux-5.4.34$ code .
 ```
 
 安装插件
-![](./linuxanalyze_lab1/图片9.png)
+![](图片9.png)
 使用快捷键Ctrl+`打开VSCode的终端，下载VSCode脚本并拷贝到新建的.vscode文件夹中
 ```
 lucas@ubuntu:~/Desktop/lab3/linux-5.4.34$ python3 ./scripts/gen_compile_commands.py
@@ -124,8 +124,8 @@ lucas@ubuntu:~/Desktop/lab3$ cp linuxkernel/src/kerneldebuging/* linux-5.4.34/.v
 ```
 
 对脚本做如下修改：
-![](./linuxanalyze_lab1/图片10.png)
-![](./linuxanalyze_lab1/图片11.png)
+![](图片10.png)
+![](图片11.png)
 
 在`start_kernel`函数中加入断点，使用快捷键F5开始调试，发现成功停在了断点处，环境配置完成
-![](./linuxanalyze_lab1/图片12.png)
+![](图片12.png)

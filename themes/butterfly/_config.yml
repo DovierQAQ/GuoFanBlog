@@ -648,7 +648,7 @@ subtitle:
   # 如果關閉打字效果，subtitle 只會顯示 sub 的第一行文字
   sub: 
     - "Welcom To My Playground."
-    - "Follow My Thought And Let's Do Something FUN!!!"
+    - "Let's Do Something FUN!!!"
 
 # Loading Animation (加載動畫)
 preloader:
@@ -729,7 +729,7 @@ runtimeshow:
 
 # Aside widget - Newest Comments
 newest_comments:
-  enable: false
+  enable: true
   sort_order: # Don't modify the setting unless you know how it works
   limit: 6
   storage: 10 # unit: mins, save data to localStorage

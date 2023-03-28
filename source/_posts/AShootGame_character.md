@@ -3,6 +3,7 @@ title: 使用Unity3D制作一款类吸血鬼幸存者的3D游戏 - 角色篇
 date: 2023-03-25 13:34:51
 updated: 2023-03-25 13:34:51
 sticky: 10
+cover: enemy_cover.png
 tags:
     - Unity3D
     - C#

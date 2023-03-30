@@ -2,6 +2,7 @@
 title: 以time/gettimeofday系统调用为例分析ARM64 Linux 5.4.34
 date: 2023-03-30 19:55:10
 updated: 2023-03-30 19:55:10
+cover: time_breakpoint.jpg
 tags:
     - linux
     - kernel
@@ -176,7 +177,7 @@ cd linux-5.4.34
 ```
 
 配置VSCode
-见{% post_link 使用VSCode调试Linux内核 %}
+见{% post_link linuxanalyze-lab3 %}
 
 # 编写代码
 

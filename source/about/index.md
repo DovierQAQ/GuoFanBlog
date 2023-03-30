@@ -72,8 +72,8 @@ RTL8710Bn 模组 2020 标准固件项目 - 唯一开发
   link_list:
     - name: GuoFan's Blog
       link: https://guofan.fun/
-      avatar: map_cover.png
+      avatar: map_cover.jpg
       descr: 略略略
 {% endflink %}
 
-![](map_cover.png)
+![](map_cover.jpg)

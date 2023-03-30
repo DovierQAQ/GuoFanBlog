@@ -3,7 +3,7 @@ title: 使用Unity3D制作一款类吸血鬼幸存者的3D游戏 - 角色篇
 date: 2023-03-25 13:34:51
 updated: 2023-03-25 13:34:51
 sticky: 10
-cover: enemy_cover.png
+cover: game_cover.jpg
 tags:
     - Unity3D
     - C#
@@ -39,7 +39,7 @@ https://www.youtube.com/playlist?list=PLFt_AvWsXl0ctd4dgE1F8g3uec4zKNRV0
 给角色添加Collider以及Rigidbody，并在角色身上添加Player.cs，以后对于角色的按键输入都由Player.cs来处理。
 记得锁定角色旋转以防角色“过分”的物理模拟。
 
-![](player_components.png)
+![](player_components.jpg)
 
 为角色添加PlayerController.cs脚本，该脚本负责角色的移动。
 
@@ -199,12 +199,12 @@ public override void Die()
 
 ### 粒子效果
 Recover方法中用到了粒子效果，该效果的参数如下：（角色拾取恢复道具时围绕在角色周围的粉红色粒子效果）
-![](recover_effect_params.png)
-![](recover_effect_params2.png)
+![](recover_effect_params.jpg)
+![](recover_effect_params2.jpg)
 
 ### UI
 另外，对于血条，这里采用UI的实现方式。Backing是一层半透明的黑色背景层，Bar是血条本体，这些内容放在UI的Canvas的Fight UI中。
-![](health_ui.png)
+![](health_ui.jpg)
 UI的Canvas有一个脚本GameUI.cs，专门用来控制游戏中所有UI的控制。public的成员可以从Unity中拖动对象到脚本属性中来初始化，当然也可以像player一样在代码中初始化，不过这就要考虑到找不到的情况了，各有应用的场景。
 
 GameUI.cs
@@ -327,7 +327,7 @@ void Update()
 - 小圆点在检测到敌人时会改变颜色，提示可以进行攻击；
 - 外围轮廓有缩放以及旋转的动画，让玩家能更容易找到准心的位置，不至于在很乱的游戏场景中丢失了准心。
 
-![](crosshair_struct.png)
+![](crosshair_struct.jpg)
 
 为准心添加上Crosshairs.cs脚本，用来控制其动画效果。
 Crosshairs.cs
@@ -378,7 +378,7 @@ public class Crosshairs : MonoBehaviour
 - 修改摄像机的Culling Mask，去除其中的UI
 - 添加一个摄像机，作为主摄像机的子对象，该摄像机的参数设置如下：
 
-![](crosshair_camera.png)
+![](crosshair_camera.jpg)
 
 ### 位置
 

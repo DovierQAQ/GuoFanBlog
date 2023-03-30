@@ -95,7 +95,7 @@ favicon: /img/favicon.ico
 
 # Avatar (頭像)
 avatar:
-  img: /img/cat.png
+  img: /img/cat.jpg
   effect: false
 
 # Disable all banner image
@@ -648,12 +648,12 @@ subtitle:
   source: subtitle
   # 如果關閉打字效果，subtitle 只會顯示 sub 的第一行文字
   sub: 
-    - "Welcom To My Playground."
+    - "Welcome To My Playground."
     - "Let's Do Something FUN!!!"
 
 # Loading Animation (加載動畫)
 preloader:
-  enable: true
+  enable: false
   # source
   # 1. fullpage-loading
   # 2. pace (progress bar)

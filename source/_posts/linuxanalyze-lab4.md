@@ -13,9 +13,9 @@ categories:
     - linux操作系统分析
 ---
 
-# 准备工作
+## 准备工作
 
-## 安装交叉编译环境
+### 安装交叉编译环境
 
 在X86的虚拟机上，为了编译出ARM64的镜像，需要安装ARM64的交叉编译环境
 
@@ -24,7 +24,7 @@ sudo apt-get install gcc-aarch64-linux-gnu
 sudo apt-get install libncurses5-dev  build-essential git bison flex libssl-dev
 ```
 
-## 制作根文件系统
+### 制作根文件系统
 
 继续使用busybox来制作根文件系统
 
@@ -127,7 +127,7 @@ cd ../lib
 cp /usr/aarch64-linux-gnu/lib/*.so*  -a .
 ```
 
-## 配置、编译内核
+### 配置、编译内核
 
 下载内核源代码
 ```
@@ -179,7 +179,7 @@ cd linux-5.4.34
 配置VSCode
 见{% post_link linuxanalyze-lab3 %}
 
-# 编写代码
+## 编写代码
 
 新建test.c
 ```
@@ -230,7 +230,7 @@ cd linux-5.4.34
 make ARCH=arm64 Image -j8  CROSS_COMPILE=aarch64-linux-gnu-
 ```
 
-# 进行调试
+## 进行调试
 
 运行VSCode
 ```

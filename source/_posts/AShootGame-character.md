@@ -43,7 +43,7 @@ https://www.youtube.com/playlist?list=PLFt_AvWsXl0ctd4dgE1F8g3uec4zKNRV0
 
 为角色添加PlayerController.cs脚本，该脚本负责角色的移动。
 
-PlayerController.cs
+`PlayerController.cs`
 ```C#
 Vector3 velocity;
 Rigidbody myRigidbody;
@@ -66,7 +66,7 @@ void FixedUpdate()
 
 流程是Player检测到移动角色的按键输入，于是调用PlayerContrller中的Move方法，Move方法设定好角色的移动速度向量，每次FixedUpdate到来时依照速度向量来移动角色。
 
-Player.cs
+`Player.cs`
 ```C#
 public float moveSpeed = 5;
 
@@ -92,7 +92,7 @@ void Update()
 
 注意到生命值这个属性，无论是对于角色，还是对于敌人都是可用的，所以新建一个父类，叫做LivingEntity，新建一个接口，叫做IDamageable。
 
-LivingEntity.cs
+`LivingEntity.cs`
 ```C#
 public class LivingEntity : MonoBehaviour, IDamageable
 {
@@ -133,7 +133,7 @@ public class LivingEntity : MonoBehaviour, IDamageable
 }
 ```
 
-IDamageable.cs
+`IDamageable.cs`
 ```C#
 public interface IDamageable
 {
@@ -146,7 +146,7 @@ public interface IDamageable
 让Player继承LivingEntity，则角色有了生命值属性。但是光使用LivingEntity中的TakeDamage方法，没有任何击中反馈，表现到游戏中则是玩家很容易忽视自己受到伤害这件事情，“死”得不明不白的。所以我们在Player中重载TakeDamage方法，加入动画效果实现受伤反馈。反馈的形式可以自由创造，这里实现一种颜色变化的方式。
 同时加入Recover方法，让角色有机会得到治疗。（当然，将Recover方法放到IDamageable和LivingEntity中是更合理的方式，这里偷懒了）
 
-Player.cs
+`Player.cs`
 ```C#
 public ParticleSystem recoverEffect;
 
@@ -207,7 +207,7 @@ Recover方法中用到了粒子效果，该效果的参数如下：（角色拾�
 ![](health_ui.jpg)
 UI的Canvas有一个脚本GameUI.cs，专门用来控制游戏中所有UI的控制。public的成员可以从Unity中拖动对象到脚本属性中来初始化，当然也可以像player一样在代码中初始化，不过这就要考虑到找不到的情况了，各有应用的场景。
 
-GameUI.cs
+`GameUI.cs`
 ```C#
 public RectTransform healthBar;
 Player player;
@@ -240,7 +240,7 @@ void UpdateFightUI()
 ### 特殊
 还有一些比较特别的场景也需要操作角色的生命值。这些就具体游戏具体实现了吧，这里给些小参考。
 比如说角色掉出了地图之外，需要有重新正常进行游戏的机制，这里检测角色的y坐标，小于一定程度就判断为角色掉出地图外，直接扣除所有生命值。
-Player.cs
+`Player.cs`
 ```C#
 void Update()
 {
@@ -253,6 +253,7 @@ void Update()
 ```
 
 又比如说新关卡开启时，角色的状态应该是满的，所以在Player这里接收关卡控制器（以后讲）的新关卡事件。
+`Player.cs`
 ```C#
 private void Awake()
 {
@@ -275,7 +276,7 @@ void OnNewStage(EnemySpawner.Stage stage)
 PlayerController中加入LookAt方法，Player每一帧获取鼠标的位置，以此坐标调用PlayerController的LookAt方法，该方法会改变角色的朝向，让角色看向准心位置，再调用CameraMovement方法移动摄像机。
 CameraMovement方法先是计算准心与角色之间的距离，将这个距离限制到10单位之内，换算成10单位的百分比，插值到sightDistanceMinMax中设置的镜头偏移最大最小值中。这个sightDistanceMinMax是在脚本属性页面设置的。
 
-PlayerController.cs
+`PlayerController.cs`
 ```C#
 public Vector2 sightDistanceMinMax;
 
@@ -303,7 +304,7 @@ void CameraMovement(Vector3 heightCorrectedPoint)
 }
 ```
 
-Player.cs
+`Player.cs`
 ```C#
 void Update()
 {
@@ -330,7 +331,7 @@ void Update()
 ![](crosshair_struct.jpg)
 
 为准心添加上Crosshairs.cs脚本，用来控制其动画效果。
-Crosshairs.cs
+`Crosshairs.cs`
 ```C#
 public class Crosshairs : MonoBehaviour
 {
@@ -384,7 +385,7 @@ public class Crosshairs : MonoBehaviour
 
 由于准心的位置需要跟玩家鼠标的输入绑定，而玩家的输入是在Player中处理的，所以将准心的移动代码写到这里。
 
-Player.cs
+`Player.cs`
 ```C#
 public Crosshairs crosshairs;
 

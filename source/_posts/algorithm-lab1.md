@@ -11,16 +11,16 @@ categories:
 
 ## 实验1 用分治法求解数组的中位数和最大子集
 
-### Pro1：Median of Two Sorted Arrays
+-------------------------------------
+
+## Pro1：Median of Two Sorted Arrays
 *There are two sorted arrays nums1 and nums2 of size m and n respectively.Find the
 median of the two sorted arrays. The overall run time complexity should be O(log
 (m+n)).*
 
-<!-- more -->
+对应力扣题：[**4. 寻找两个正序数组的中位数**](https://leetcode.cn/problems/median-of-two-sorted-arrays/)
 
-对应力扣题：**4. 寻找两个正序数组的中位数**
-
-#### 基本思路：
+### 基本思路：
 利用数组已经排好序的特性，寻找第k大的数（k=(m+n)/2），该数即为中位数。
 特别的，如果总的数字数目为双数，需要找第k大的数和它后面的一个数，两数做平均。
 对于找第k大的数，每次先找到两个数组中，未丢弃的第一个数与数组第k个数中间的数，找到两个数i1和i2，将较小者前面的数全部丢弃，因为较小者前面的数一定不会包含第k大的数。
@@ -30,7 +30,7 @@ median of the two sorted arrays. The overall run time complexity should be O(log
 如果是发生情况(2)，说明已经丢弃了k-1个数，两个数组中当前最小的一个数就是所寻找的数。
 因为每次迭代之后，所需解决的问题规模变小了k'/2，所以符合分治法的思想。
 
-#### 题解：
+### 题解：
 ```C++
 class Solution {
 public:
@@ -72,20 +72,21 @@ public:
 };
 ```
 
-#### 复杂度分析：
+### 复杂度分析：
 最好情况下：每次递归调⽤去除⼀半的数据，则复杂度为O(log(m+n))
 最坏情况下：每次递归调⽤去除⼀个数据，则复杂度为O(m+n)
 平均情况： O(log(m+n))
 递归树层数平均为log(m+n)层，每层的时间复杂度为常数级别，因此总平均复杂度为O(log(m+n))
 
+----------------------------------
 
-### Pro2：Maximum Subarray
+## Pro2：Maximum Subarray
 *Find the contiguous subarray within an array (containing at least one number) which has the largest sum.
 For example, given the array [-2,1,-3,4,-1,2,1,-5,4], the contiguous subarray [4,-1,2,1] has the largest sum = 6*
 
-对应力扣题：**53. 最大子数组和**
+对应力扣题：[**53. 最大子数组和**](https://leetcode.cn/problems/maximum-subarray/)
 
-##### 基本思路：
+#### 基本思路：
 利用分治法，每次将数组对半分，将寻找最大子数组和分解为三个问题：
 1. 左半边数组中最大子数组和
 2. 右半边数组中最大子数组和
@@ -106,7 +107,7 @@ isum = l.isum + r.isum;
 msum = max(max(l.msum, r.msum), l.rsum + r.lsum);
 ```
 
-#### 题解：
+### 题解：
 ```C++
 class Solution {
     struct state {
@@ -135,7 +136,7 @@ public:
 };
 ```
 
-#### 复杂度分析：
+### 复杂度分析：
 时间复杂度：O(nlogn)，其中 n 是数组 nums 的⻓度
 空间复杂度：即函数递归栈的深度 O(logn)
 每次分解数组都是等分，因此递归树的层数是logn，每层进⾏合并的复杂度（求解跨越mid的⼦数组最⼤和的时间是n），因此时间复杂度是O(nlogn)

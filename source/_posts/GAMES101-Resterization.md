@@ -575,3 +575,32 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
 ![](assignment1_result.jpg)
 
 按下A或者D键会分别左右旋转一定角度。
+
+### 提高部分
+使用Rodrigues’ Rotation Formula：
+```C++
+Eigen::Matrix4f get_rotation(Vector3f axis, float angle)
+{
+    angle = angle * MY_PI / 180.0;
+    Eigen::Matrix3f N;
+    N <<0,          -axis.z(),  axis.y(),
+        axis.z(),   0,          -axis.x(),
+        -axis.y(),  axis.x(),   0;
+    Eigen::Matrix3f R = std::cos(angle) * Eigen::Matrix3f::Identity() + 
+                        (1-std::cos(angle))*axis*axis.transpose() + 
+                        std::sin(angle) * N;
+    
+    Eigen::Matrix4f rotation = Eigen::Matrix4f::Zero();
+    rotation(3, 3) = 1;
+    rotation.block(0, 0, 2, 2) = R.block(0, 0, 2, 2);
+
+    return rotation;
+}
+```
+
+将`main`函数中的
+`r.set_model(get_model_matrix(angle));`
+修改为
+`r.set_model(get_rotation(Eigen::Vector3f(-1, 1, 0), angle));`
+让三角形绕着$(-1, 1, 0)$轴旋转：
+![](assignment1_additional.jpg)

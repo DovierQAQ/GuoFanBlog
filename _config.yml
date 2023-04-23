@@ -105,3 +105,6 @@ theme: butterfly
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: ''
+
+tag_plantuml:
+	type: static

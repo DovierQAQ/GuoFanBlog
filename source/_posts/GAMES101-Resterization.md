@@ -16,7 +16,7 @@ categories:
 
 20年的时候，好朋友推荐了这个课程给我，简直是神仙课程！当时每天下班后就再花一个多小时来听一节课，陆陆续续听完了。最近打算重温一下这系列课程，顺便补上笔记。
 
-GAMES101总共分为四篇，这篇是第一篇“光栅化”。（特别期待后续的光追篇）
+这篇是GAMES101的第一篇“光栅化”。
 
 ----------------------------
 
@@ -471,6 +471,12 @@ $$
 - **FXAA** (Fast Approximate AA)，先得到有锯齿的图，再找到图像的边界，替换这些边界为无锯齿的版本
 - **TAA** (Temporal AA)，不同时间使用像素的不同位置采样，把MSAA的操作分散在了时间上
 
+## 深度缓存（Z-buffer）
+
+画家算法：先画远处的物体，后画近处的物体，近处的物体会将远处的物体遮挡。需要三角形按照深度排序，但是如果三角形交叉时候无法排序。
+
+所以引入深度缓存，对每一个像素记录其深度，而不是三角形。绘制时，遍历所有三角形，当找到某个像素点在三角形内时，先判断这个像素点在三角形上的深度，是否与Z-buffer中已有的深度相比较小，如果是则说明这个像素会遮挡已经绘制好的像素点，所以需要更新frame-buffer中对应像素点的值，以及该像素点在Z-buffer中的值。
+
 ----------------------------
 
 ## 作业0
@@ -492,6 +498,7 @@ $$
 ### 题解
 
 添加代码：
+`main.cpp - function main`
 ```C++
 std::cout << "\nAssignment 0: " << std::endl;
 Eigen::Vector3f p(2.0f, 1.0f, 1.0f);
@@ -530,6 +537,7 @@ Assignment 0:
 ### 题解
 
 `get_model_matrix`只有一个`float`类型的旋转角度参数，所以只需返回一个关于$z$轴旋转的旋转矩阵即可：
+`main.cpp`
 ```C++
 Eigen::Matrix4f get_model_matrix(float rotation_angle)
 {
@@ -561,6 +569,7 @@ M_{proj} =
 \end{pmatrix}
 $$
 不过我这里想跟着老师的推导思路，将视锥先挤压成矩形，然后利用正交投影：
+`main.cpp`
 ```C++
 Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
                                       float zNear, float zFar)
@@ -606,6 +615,7 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
 
 ### 提高部分
 使用Rodrigues’ Rotation Formula：
+`main.cpp`
 ```C++
 Eigen::Matrix4f get_rotation(Vector3f axis, float angle)
 {
@@ -632,3 +642,260 @@ Eigen::Matrix4f get_rotation(Vector3f axis, float angle)
 `r.set_model(get_rotation(Eigen::Vector3f(-1, 1, 0), angle));`
 让三角形绕着$(-1, 1, 0)$轴旋转：
 ![](assignment1_additional.jpg)
+
+----------------------------
+
+## 作业2
+
+在上次作业中，虽然我们在屏幕上画出一个线框三角形，但这看起来并不是那么的有趣。所以这一次我们继续推进一步——在屏幕上画出一个实心三角形，换言之，栅格化一个三角形。
+
+### 题解
+
+对于projection矩阵，我们这次直接用推导完成的矩阵：
+`main.cpp`
+```C++
+Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio, float zNear, float zFar)
+{
+    // TODO: Copy-paste your implementation from the previous assignment.
+    Eigen::Matrix4f projection;
+    eye_fov = eye_fov * MY_PI / 180.0;
+    float ty = -1.0 / std::tan(eye_fov / 2.0);
+    projection <<   (ty / aspect_ratio),    0,  0,  0,
+                    0,                      ty, 0,  0,
+                    0,                      0,  (zNear+zFar)/(zNear-zFar),  (-2.0*zNear*zFar)/(zNear-zFar),
+                    0,                      0,  1,  0;
+
+    return projection;
+}
+```
+
+对于栅格化三角形，其步骤为：
+1. 找到三角形的包围盒
+2. 遍历包围盒中的像素，判断各像素是否在三角形内部
+3. 如果是，则获得该像素在三角形中的深度值，并判断该深度值是否比现存Z-buffer中的小
+4. 若新的z值较小，则更新frame-buffer和Z-buffer
+
+`rasterizer.cpp`
+```C++
+//Screen space rasterization
+void rst::rasterizer::rasterize_triangle(const Triangle& t) {
+    auto v = t.toVector4();
+    
+    // TODO : Find out the bounding box of current triangle.
+    // iterate through the pixel and find if the current pixel is inside the triangle
+    float x_min = floor(std::min(std::min(v[0].x(), v[1].x()), v[2].x()));
+    float x_max = ceil(std::max(std::max(v[0].x(), v[1].x()), v[2].x()));
+    float y_min = floor(std::min(std::min(v[0].y(), v[1].y()), v[2].y()));
+    float y_max = ceil(std::max(std::max(v[0].y(), v[1].y()), v[2].y()));
+
+    // If so, use the following code to get the interpolated z value.
+    //auto[alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);
+    //float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
+    //float z_interpolated = alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();
+    //z_interpolated *= w_reciprocal;
+
+    // TODO : set the current pixel (use the set_pixel function) to the color of the triangle (use getColor function) if it should be painted.
+    for (int x = x_min; x < x_max; x++) {
+        for (int y = y_min; y < y_max; y++) {
+            if (insideTriangle(x+0.5f, y+0.5f, t.v)) {
+                auto[alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);
+                float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
+                float z_interpolated = alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();
+                z_interpolated *= w_reciprocal;
+                if (z_interpolated < depth_buf[get_index(x, y)]) {
+                    Eigen::Vector3f point(x, y, 1.0f);
+                    set_pixel(point, t.getColor());
+                    depth_buf[get_index(x, y)] = z_interpolated;
+                }
+            }
+        }
+    }
+}
+```
+
+判断一个点是否在三角形内，使用叉乘：即将各顶点与该点连成向量，将各向量与各边进行叉乘，结果的z值代表了叉乘之后的方向，如果三次叉乘都同向则说明点在三角形内。
+`rasterizer.cpp`
+```C++
+static bool insideTriangle(int x, int y, const Vector3f* _v)
+{   
+    // TODO : Implement this function to check if the point (x, y) is inside the triangle represented by _v[0], _v[1], _v[2]
+    Eigen::Vector3f ab(_v[0].x() - _v[1].x(), _v[0].y() - _v[1].y(), 1.0f);
+    Eigen::Vector3f bc(_v[1].x() - _v[2].x(), _v[1].y() - _v[2].y(), 1.0f);
+    Eigen::Vector3f ca(_v[2].x() - _v[0].x(), _v[2].y() - _v[0].y(), 1.0f);
+
+    Eigen::Vector3f ap(_v[0].x() - x, _v[0].y() - y, 1.0f);
+    Eigen::Vector3f bp(_v[1].x() - x, _v[1].y() - y, 1.0f);
+    Eigen::Vector3f cp(_v[2].x() - x, _v[2].y() - y, 1.0f);
+
+    float z1 = ab.cross(ap).z();
+    float z2 = bc.cross(bp).z();
+    float z3 = ca.cross(cp).z();
+
+    return (z1 > 0 && z2 > 0 && z3 > 0) || (z1 < 0 && z2 < 0 && z3 < 0);
+}
+```
+
+### 结果
+
+![](assignment2_result.jpg)
+
+### 提高部分
+
+提高部分要求用SSAA，而课堂上讲的是MSAA。区别在于：
+- MSAA (Multisample AA) 是利用每个像素点中多个点进行采样，达到“模糊”的目的，之后再将像素点中心的颜色显示出来。
+- SSAA (Supersampling AA) 相当于渲染了一张更高分辨率的图片，然后将一个像素覆盖的几个子像素做平均，再显示。
+
+增加SSAA所需要维护的子像素缓冲，顺便加一个开关方便后续对比：
+`rasterizer.hpp - class rasterizer`
+```C++
+class rasterizer
+{
+public:
+    rasterizer(int w, int h, bool use_2xSSAA = false);
+private:
+    bool enable_2xSSAA;
+    std::vector<Eigen::Vector3f> frame_buf;
+    std::vector<std::vector<Eigen::Vector3f>> frame_buf_2xSSAA;
+
+    std::vector<float> depth_buf;
+    std::vector<std::vector<float>> depth_buf_2xSSAA;
+};
+```
+
+增加对每个子像素都进行处理的代码：
+`rasterizer.cpp - function rst::rasterizer::rasterize_triangle`
+```C++
+std::vector<float> coord_offset{0.25, 0.75};
+for (int x = x_min; x < x_max; x++) {
+    for (int y = y_min; y < y_max; y++) {
+        if (enable_2xSSAA) {
+            int idx = 0;
+            for (auto i : coord_offset) {
+                for (auto j : coord_offset) {
+                    if (insideTriangle(x+i, y+j, t.v)) {
+                        auto[alpha, beta, gamma] = computeBarycentric2D(x+i, y+j, t.v);
+                        float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
+                        float z_interpolated = alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();
+                        z_interpolated *= w_reciprocal;
+                        if (z_interpolated < depth_buf_2xSSAA[get_index(x, y)][idx]) {
+                            frame_buf_2xSSAA[get_index(x, y)][idx] = t.getColor();
+                            depth_buf_2xSSAA[get_index(x, y)][idx] = z_interpolated;
+                        }
+                    }
+                    idx++;
+                }
+            }
+        } else {
+            if (insideTriangle(x+0.5f, y+0.5f, t.v)) {
+                auto[alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);
+                float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
+                float z_interpolated = alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();
+                z_interpolated *= w_reciprocal;
+                if (z_interpolated < depth_buf[get_index(x, y)]) {
+                    Eigen::Vector3f point(x, y, 1.0f);
+                    set_pixel(point, t.getColor());
+                    depth_buf[get_index(x, y)] = z_interpolated;
+                }
+            }
+        }
+    }
+}
+```
+
+新增加的两个缓存也需要做初始化以及初值填充：
+`rasterizer.cpp`
+```C++
+void rst::rasterizer::clear(rst::Buffers buff)
+{
+    if ((buff & rst::Buffers::Color) == rst::Buffers::Color)
+    {
+        std::fill(frame_buf.begin(), frame_buf.end(), Eigen::Vector3f{0, 0, 0});
+        if (enable_2xSSAA) {
+            for (int i = 0; i < frame_buf_2xSSAA.size(); i++) {
+                frame_buf_2xSSAA[i].resize(4);
+                std::fill(frame_buf_2xSSAA[i].begin(), frame_buf_2xSSAA[i].end(), Eigen::Vector3f{0, 0, 0});
+            }
+        }
+    }
+    if ((buff & rst::Buffers::Depth) == rst::Buffers::Depth)
+    {
+        std::fill(depth_buf.begin(), depth_buf.end(), std::numeric_limits<float>::infinity());
+        if (enable_2xSSAA) {
+            for (int i = 0; i < depth_buf_2xSSAA.size(); i++) {
+                depth_buf_2xSSAA[i].resize(4);
+                std::fill(depth_buf_2xSSAA[i].begin(), depth_buf_2xSSAA[i].end(), std::numeric_limits<float>::infinity());
+            }
+        }
+    }
+}
+
+rst::rasterizer::rasterizer(int w, int h, bool use_2xSSAA) : width(w), height(h), enable_2xSSAA(use_2xSSAA)
+{
+    frame_buf.resize(w * h);
+    depth_buf.resize(w * h);
+    if (enable_2xSSAA) {
+        frame_buf_2xSSAA.resize(w * h);
+        depth_buf_2xSSAA.resize(w * h);
+    }
+}
+```
+
+实际显示时，需要对子像素做平均：
+`rasterizer.cpp - function rst::rasterizer::draw`
+```C++
+rasterize_triangle(t);
+if (enable_2xSSAA) {
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            Eigen::Vector3f color(0, 0, 0);
+            for (int i = 0; i < 4; i++) {
+                color += frame_buf_2xSSAA[get_index(x, y)][i];
+            }
+            color /= 4;
+            set_pixel(Eigen::Vector3f(x, y, 1.0f), color);
+        }
+    }
+}
+```
+
+最后修改main函数中的逻辑：
+`main.cpp - function main`
+```C++
+rst::rasterizer r(700, 700, false);
+
+while(key != 27)
+{
+    long long frame_begin_time = get_timestamp();
+
+    // ...
+
+    long long frame_time = get_timestamp() - frame_begin_time;
+    std::cout << "frame count: " << frame_count++ << " duration: " << frame_time << '\n';
+}
+```
+
+添加时间戳函数：
+`main.cpp`
+```C++
+#include <sys/time.h>
+#include <time.h>
+
+long long get_timestamp(void)
+{
+    long long tmp;
+    struct timeval tv;
+
+    gettimeofday(&tv, NULL);
+    tmp = tv.tv_sec;
+    tmp = tmp * 1000;
+    tmp = tmp + (tv.tv_usec / 1000);
+
+    return tmp;
+}
+```
+
+结果：
+![](assignment2_additional.jpg)
+
+将抗锯齿开启与不开启的图像做对比，效果还是非常显著的（效率下降也是非常显著的）：
+![](assignment2_SSAA.jpg)

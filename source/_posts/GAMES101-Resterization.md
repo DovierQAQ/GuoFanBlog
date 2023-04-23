@@ -16,7 +16,13 @@ categories:
 
 20年的时候，好朋友推荐了这个课程给我，简直是神仙课程！当时每天下班后就再花一个多小时来听一节课，陆陆续续听完了。最近打算重温一下这系列课程，顺便补上笔记。
 
-这篇是GAMES101的第一篇“光栅化”。
+图形学有一种魔力，每次学图形学相关的知识的时候，总在感叹其美妙。第一次系统地学习图形学是在大三，当时智能车已经进入了平稳的调试期，所以找了一些囤积起来的一直想学的技术书籍开始学习：Golang、图形学、Unity3D等等。
+学到图形学的时候，正好智能车这边在调试利用陀螺仪对坡道的识别，所以突发奇想：在屏幕上显示一个3D图形，然后把陀螺仪解算出来的姿态实时绑定到3D图形上面，会比单纯地看上位机展示出来的陀螺仪数据曲线要来的直观很多吧！于是有了这个玩意：
+
+<div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;"><iframe 
+src="//player.bilibili.com/player.html?aid=782790227&bvid=BV1L14y1f7Bw&cid=1105983856&page=1&page=1&autoplay=false" 
+scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" 
+style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;"> </iframe></div>
 
 ----------------------------
 

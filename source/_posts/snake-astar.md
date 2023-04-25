@@ -8,6 +8,8 @@ tags:
     - C#
     - 贪吃蛇
     - A*
+    - 并查集
+    - 堆
 categories:
     - Unity3D
     - SnakeAStar

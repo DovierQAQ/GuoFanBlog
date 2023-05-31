@@ -6,6 +6,7 @@ tags:
 categories:
     - 试验
     - 博客搭建
+hide: true
 ---
 
 ### 自此我就有自己的博客啦！

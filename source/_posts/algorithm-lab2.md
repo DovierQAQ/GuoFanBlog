@@ -10,6 +10,7 @@ tags:
 categories:
     - 课程实验
     - 算法设计与分析
+hide: true
 ---
 
 ## 实验要求

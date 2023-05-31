@@ -9,6 +9,7 @@ tags:
 categories:
     - 课程实验
     - linux操作系统分析
+hide: true
 ---
 
 ## 虚拟化技术

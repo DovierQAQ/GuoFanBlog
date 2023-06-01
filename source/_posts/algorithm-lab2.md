@@ -8,8 +8,7 @@ tags:
     - 快速排序
     - 计数排序
 categories:
-    - 课程实验
-    - 算法设计与分析
+    - 算法研究
 hide: true
 ---
 

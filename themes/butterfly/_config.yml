@@ -980,3 +980,21 @@ index_generator:
   per_page: 10
   order_by: -date
   pagination_dir: page
+
+categoryBar:
+  enable: true
+  column: odd # 显示列数,odd：3列 | even：4列
+  row: 1 #显示行数，默认两行，超过行数切换为滚动显示
+  descr:
+    - 学习、总结
+    - 探究、优化
+    - 开发、项目
+  cover:
+    - url('/img/cupcat1.jpg')
+    - url('/img/cupcat2.jpg')
+    - url('/img/cupcat3.jpg')
+    - '#abcdef' # HEX格式色值需要用''包裹，不然会被识别成注释
+    - rgba(45,67,89,0.7)
+    - linear-gradient(rgba(0, 0, 0, 0.4) 25%, rgba(200,16 , 16, 0) 100%)
+    - url('https://npm.elemecdn.com/akilar-candyassets/image/cover5.webp')
+    - url('https://npm.elemecdn.com/akilar-candyassets/image/cover6.webp')

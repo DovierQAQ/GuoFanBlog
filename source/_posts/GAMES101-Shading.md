@@ -9,8 +9,7 @@ tags:
     - GAMES101
     - 着色
 categories:
-    - 计算机图形学
-    - GAMES101
+    - 学习笔记
 ---
 
 ## Blinn-Phong Reflectance Model

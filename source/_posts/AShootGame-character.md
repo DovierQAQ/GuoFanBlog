@@ -11,8 +11,7 @@ tags:
     - 随机地图
     - Rouge-like
 categories:
-    - Unity3D
-    - AShootGame
+    - 经验总结
 ---
 
 

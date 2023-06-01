@@ -9,8 +9,7 @@ tags:
     - 编程语言
     - 函数式编程
 categories:
-    - 编程语言
-    - Julia
+    - 学习笔记
 ---
 
 {% note warning flat %}

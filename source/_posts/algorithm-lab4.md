@@ -7,8 +7,7 @@ tags:
     - 贪心算法
     - 任务调度
 categories:
-    - 课程实验
-    - 算法设计与分析
+    - 算法研究
 hide: true
 ---
 

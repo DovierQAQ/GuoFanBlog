@@ -11,8 +11,7 @@ tags:
     - 并查集
     - 堆
 categories:
-    - Unity3D
-    - SnakeAStar
+    - 算法研究
 ---
 
 <div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;"><iframe 

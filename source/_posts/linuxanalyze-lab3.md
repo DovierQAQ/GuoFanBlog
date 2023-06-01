@@ -7,8 +7,7 @@ tags:
     - kernel
     - vscode
 categories:
-    - 课程实验
-    - linux操作系统分析
+    - 学习笔记
 hide: true
 ---
 

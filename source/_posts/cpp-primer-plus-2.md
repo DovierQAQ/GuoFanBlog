@@ -3,7 +3,6 @@ title: 《C++ Primer Plus 第六版》学习笔记2 - 内存模型和名称空�
 date: 2023-07-19 20:58:50
 updated: 2023-07-19 20:58:50
 cover:
-katex: true
 tags:
     - C++
 categories:

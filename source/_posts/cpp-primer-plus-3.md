@@ -167,6 +167,113 @@ public:
 
 ```
 
+# 第十一章 - 使用类
+
+## 运算符重载
+
+要重载运算符，需要使用被称为运算符函数的特殊函数形式。运算符函数的格式为：`operatorop(argument-list)`
+例如`operator+()`重载`+`运算符。
+
+不能虚构一个新的符号用来作为运算符函数。
+
+## 计算时间：一个运算符重载示例
+
+C++对用户定义的运算符重载的限制：
+1. 重载后的运算符必须至少有一个操作数是用户定义的类型。
+2. 使用运算符时不能喂饭运算符原来的语法规则。例如运算符`%`本来有两个操作数，不能重载为只有一个。也不能修改运算符优先级。
+3. 不能创建新运算符。
+4. 不能重载下面的运算符：
+    - sizeof
+    - .：成员运算符
+    - . *：成员指针运算符
+    - ::：作用域运算符
+    - ?:：条件运算符
+    - typeid：一个RTTI运算符
+    - const_cast
+    - dynamic_cast
+    - reinterpret_cast
+    - static_cast
+5. 下面的运算符只能通过成员函数进行重载：
+    - =
+    - ()
+    - []
+    - ->
+
+## 友元
+
+友元有三种：
+- 友元函数
+- 友元类
+- 友元成员函数
+
+通过让函数成为类的友元，可以赋予该函数与类的成员函数相同的访问权限。
+
+将函数原型放在类声明中，并加上关键字`friend`来创建友元：`friend Time operator*(double m, const Time & t);`。它不是成员函数，不能使用成员运算符来调用。
+它的函数定义不需要加`Time::`限定符：
+```C++
+Time operator*(double m, const Time &t) {
+    // ...
+}
+```
+
+一般来说，要重载`<<`运算符来显示`c_name`的对象，可使用一个友元函数，其定义如下：
+```C++
+ostream & operator<<(ostream & os, const c_name & obj) {
+    os << ...;
+    return os;
+}
+```
+
+## 重载运算符：作为成员函数还是非成员函数
+
+```C++
+Time operator+(const Time & t) const; //member version
+// nonmember version
+friend Time operator+(const Time & t1, const Time & t2);
+```
+不能同时选择这两种格式，会被视为二义性错误。
+
+## 再谈重载：一个矢量类
+
+如果方法通过计算得到一个新的类对象，则应考虑是否可以使用类构造函数来完成这种工作。这样做不仅可以避免麻烦，而且可以确保新的对象是按照正确的方式创建的。
+
+因为运算符重载是通过函数来实现的，所以只要运算符函数的特征标不同，使用的运算符数量与相应的内置C++运算符相同，九可以多次重载同一个运算符。
+
+## 类的自动转换和强制类型转换
+
+如果类有接受一个参数的构造函数，则具备了自动类型转换的条件，例如：
+```C++
+Stonewt(double lbs);    // template for double-to-Stonewt conversion
+
+Stonewt myCat;
+myCat = 19.6;
+```
+程序会使用构造函数`Stonewt(double)`来创建一个临时的`Stonewt`对象，并将`19.6`作为初始化值。随后，采用逐成员赋值方式将该临时对象的内容复制到`myCat`中。这一过程称为隐式转换，它是自动进行的。
+
+如果不想编译器做这样的隐式转换，可以在声明构造函数时加上关键字`explicit`，如`explicit Stonewt(double lbs);`。
+
+隐式转换可以发生在以下场景中：
+- 将`Stonewt`对象初始化为`double`值时。
+- 将`double`值赋给`Stonewt`对象时。
+- 将`double`值传递给接受`Stonewt`参数的函数时。
+- 返回值被声明为`Stonewt`的函数试图返回`double`类型时。
+- 在上述任意一种情况下，使用可转换为`double`类型的内置类型时。
+
+如果要将一个`Stonewt`类型的对象赋值给一个`double`类型的变量，此时转换函数就派上用场了。要转换为`typeName`类型，需要使用这种形式的转换函数：`operator typeName();`。
+需注意的是：
+- 转换函数必须是类方法
+- 转换函数不能指定返回类型
+- 转换函数不能有参数
+例如，转换为`double`类型的函数的原型如下：`operator double();`
+
+同样的，如果进行了二次转换，出现二义性问题的时候编译器将拒绝这样的语句。
+
+有两种使用转换函数的方式：
+- `double host = double(wolfe)`
+- `double thinker = (double)wolfe`
+
+C++11中，转换函数也可以使用`explicit`关键字修饰为显式的。
+
 # 编程练习
 
 ## 第十章编程练习
@@ -882,5 +989,511 @@ public:
 };
 
 #endif /* list_h */
+
+```
+
+## 第十一章编程练习
+
+### 1
+
+```C++
+//
+//  main.cpp
+//  11-1
+//
+//  Created by 郭帆 on 2023/7/20.
+//
+
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+#include <ctime>
+#include "vect.hpp"
+
+int main() {
+    using namespace std;
+    using VECTOR::Vector;
+    srand((unsigned)time(0));
+    double direction;
+    Vector step;
+    Vector result(0.0, 0.0);
+    unsigned long steps = 0;
+    double target;
+    double dstep;
+    ofstream fout;
+
+    fout.open("temp.txt");
+    cout << "Enter target distance (q to quit): ";
+    while (cin >> target) {
+        cout << "Enter step length: ";
+        if (!(cin >> dstep)) {
+            break;
+        }
+        fout << "Target Distance: " << target;
+        fout << ", Step Size: " << dstep << endl;
+        fout << "0: " << result << endl;
+        while (result.magval() < target) {
+            direction = rand() % 360;
+            step.reset(dstep, direction, Vector::POL);
+            result = result + step;
+            steps++;
+            fout << steps << ": " << result << endl;
+        }
+        fout << "After " << steps << " steps, the subject ";
+        fout << "has the following location:\n";
+        fout << result << endl;
+        result.polar_mode();
+        fout << " or\n";
+        fout << result << endl;
+        fout << "Average outward distance per step = ";
+        fout << result.magval() / steps << endl;
+        fout << endl;
+
+        cout << "After " << steps << " steps, the subject ";
+        cout << "has the following location:\n";
+        cout << result << endl;
+        result.polar_mode();
+        cout << " or\n";
+        cout << result << endl;
+        cout << "Average outward distance per step = ";
+        cout << result.magval() / steps << endl;
+        steps = 0;
+        result.reset(0.0, 0.0);
+        cout << "Enter target distance (q to quit): ";
+    }
+    cin.clear();
+    while (cin.get() != '\n')
+        continue;
+    fout.close();
+    cout << "Bye!\n";
+
+    return 0;
+}
+
+```
+
+```C++
+//
+//  vect.hpp
+//  11-1
+//
+//  Created by 郭帆 on 2023/7/20.
+//
+
+#ifndef vect_hpp
+#define vect_hpp
+
+#include <iostream>
+
+namespace VECTOR {
+    class Vector {
+    public:
+        enum Mode {RECT, POL};
+
+    private:
+        double x;
+        double y;
+        double mag;
+        double ang;
+        Mode mode;
+        void set_mag();
+        void set_ang();
+        void set_x();
+        void set_y();
+
+    public:
+        Vector();
+        Vector(double n1, double n2, Mode form = RECT);
+        void reset(double n1, double n2, Mode form = RECT);
+        ~Vector();
+        double xval() const { return x; }
+        double yval() const { return y; }
+        double magval() const { return mag; }
+        double angval() const { return ang; }
+        void polar_mode();
+        void rect_mode();
+        Vector operator+(const Vector &b) const;
+        Vector operator-(const Vector &b) const;
+        Vector operator-() const;
+        Vector operator*(double n) const;
+        friend Vector operator*(double n, const Vector &a);
+        friend std::ostream &operator<<(std::ostream &os, const Vector &v);
+    };
+}
+
+#endif /* vect_hpp */
+
+```
+
+```C++
+//
+//  vect.cpp
+//  11-1
+//
+//  Created by 郭帆 on 2023/7/20.
+//
+
+#include <cmath>
+#include "vect.hpp"
+using std::atan;
+using std::atan2;
+using std::cos;
+using std::cout;
+using std::sin;
+using std::sqrt;
+
+namespace VECTOR {
+    const double Rad_to_deg = 45.0 / atan(1.0);
+
+    void Vector::set_mag() {
+        mag = sqrt(x * x + y * y);
+    }
+
+    void Vector::set_ang() {
+        if (x == 0.0 && y == 0.0) {
+            ang = 0.0;
+        } else {
+            ang = atan2(y, x);
+        }
+    }
+
+    void Vector::set_x() {
+        x = mag * cos(ang);
+    }
+
+    void Vector::set_y() {
+        y = mag * sin(ang);
+    }
+
+    Vector::Vector() {
+        x = y = mag = ang = 0.0;
+        mode = RECT;
+    }
+
+    Vector::Vector(double n1, double n2, Mode form) {
+        mode = form;
+        if (form == RECT) {
+            x = n1;
+            y = n2;
+            set_mag();
+            set_ang();
+        } else if (form == POL) {
+            mag = n1;
+            ang = n2 / Rad_to_deg;
+            set_x();
+            set_y();
+        } else {
+            cout << "Incorrect 3rd argument to Vector() -- ";
+            cout << "vector set to 0\n";
+            x = y = mag = ang = 0.0;
+            mode = RECT;
+        }
+    }
+
+    void Vector::reset(double n1, double n2, Mode form) {
+        mode = form;
+        if (form == RECT) {
+            x = n1;
+            y = n2;
+            set_mag();
+            set_ang();
+        } else if (form == POL) {
+            mag = n1;
+            ang = n2 / Rad_to_deg;
+            set_x();
+            set_y();
+        } else {
+            cout << "Incorrect 3rd argument to Vector() -- ";
+            cout << "vector set to 0\n";
+            x = y = mag = ang = 0.0;
+            mode = RECT;
+        }
+    }
+
+    Vector::~Vector() {
+    }
+
+    void Vector::polar_mode() {
+        mode = POL;
+    }
+
+    void Vector::rect_mode() {
+        mode = RECT;
+    }
+
+    Vector Vector::operator+(const Vector &b) const {
+        return Vector(x + b.x, y + b.y);
+    }
+
+    Vector Vector::operator-(const Vector &b) const {
+        return Vector(x - b.x, y - b.y);
+    }
+
+    Vector Vector::operator-() const {
+        return Vector(-x, -y);
+    }
+
+    Vector Vector::operator*(double n) const {
+        return Vector(n * x, n * y);
+    }
+
+    Vector operator*(double n, const Vector &a) {
+        return a * n;
+    }
+
+    std::ostream &operator<<(std::ostream &os, const Vector &v) {
+        if (v.mode == Vector::RECT) {
+            os << "(x,y) = (" << v.x << ", " << v.y << ")";
+        } else if (v.mode == Vector::POL) {
+            os << "(m,a) = (" << v.mag << ", ";
+            os << v.ang * Rad_to_deg << ")";
+        } else {
+            os << "Vector object mode is invalid";
+        }
+        return os;
+    }
+}
+
+```
+
+### 2
+
+```C++
+//
+//  main.cpp
+//  11-2
+//
+//  Created by 郭帆 on 2023/7/20.
+//
+
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include "vect.hpp"
+
+int main() {
+    using namespace std;
+    using VECTOR::Vector;
+    srand((unsigned)time(0));
+    double direction;
+    Vector step;
+    Vector result(0.0, 0.0);
+    unsigned long steps = 0;
+    double target;
+    double dstep;
+
+    cout << "Enter target distance (q to quit): ";
+    while (cin >> target) {
+        cout << "Enter step length: ";
+        if (!(cin >> dstep)) {
+            break;
+        }
+        while (result.magval() < target) {
+            direction = rand() % 360;
+            step.reset(dstep, direction, Vector::POL);
+            result = result + step;
+            steps++;
+        }
+        cout << "After " << steps << " steps, the subject ";
+        cout << "has the following location:\n";
+        cout << result << endl;
+        result.polar_mode();
+        cout << " or\n";
+        cout << result << endl;
+        cout << "Average outward distance per step = ";
+        cout << result.magval() / steps << endl;
+        steps = 0;
+        result.reset(0.0, 0.0);
+        cout << "Enter target distance (q to quit): ";
+    }
+    cout << "Bye!\n";
+
+    return 0;
+}
+
+```
+
+```C++
+//
+//  vect.hpp
+//  11-2
+//
+//  Created by 郭帆 on 2023/7/20.
+//
+
+#ifndef vect_hpp
+#define vect_hpp
+
+#include <iostream>
+
+namespace VECTOR {
+    class Vector {
+    public:
+        enum Mode{ RECT, POL };
+
+    private:
+        double x;
+        double y;
+        Mode mode;
+        double set_mag() const;
+        double set_ang() const;
+        void set_x(double mag, double ang);
+        void set_y(double mag, double ang);
+
+    public:
+        Vector();
+        Vector(double n1, double n2, Mode form = RECT);
+        void reset(double n1, double n2, Mode form = RECT);
+        ~Vector();
+        double xval() const { return x; }
+        double yval() const { return y; }
+        double magval() const { return set_mag(); }
+        double angval() const { return set_ang(); }
+        void polar_mode();
+        void rect_mode();
+        Vector operator+(const Vector &b) const;
+        Vector operator-(const Vector &b) const;
+        Vector operator-() const;
+        Vector operator*(double n) const;
+        friend Vector operator*(double n, const Vector &a);
+        friend std::ostream &operator<<(std::ostream &os, const Vector &v);
+    };
+}
+
+#endif /* vect_hpp */
+
+```
+
+```C++
+//
+//  vect.cpp
+//  11-2
+//
+//  Created by 郭帆 on 2023/7/20.
+//
+
+#include <cmath>
+#include "vect.hpp"
+using std::atan;
+using std::atan2;
+using std::cos;
+using std::cout;
+using std::sin;
+using std::sqrt;
+
+namespace VECTOR {
+    const double Rad_to_deg = 45.0 / atan(1.0);
+
+    double Vector::set_mag() const {
+        return sqrt(x * x + y * y); //计算向量的长度;
+    }
+
+    double Vector::set_ang() const {
+        if (x == 0.0 && y == 0.0) {
+            return 0.0; //若是向量的x坐标和y坐标为0则角度也为0;
+        } else {
+            return atan2(y, x); //否则计算向量的角度并返回至调用对象;
+        }
+    }
+
+    void Vector::set_x(double mag, double ang) {
+        x = mag * cos(ang);
+    }
+
+    void Vector::set_y(double mag, double ang) {
+        y = mag * sin(ang);
+    }
+
+    Vector::Vector() {
+        x = y = 0.0;
+        mode = RECT;
+    }
+
+    Vector::Vector(double n1, double n2, Mode form) {
+        mode = form;
+        if (form == RECT) {
+            x = n1;
+            y = n2;
+        } else if (form == POL) {
+            set_x(n1, n2 / Rad_to_deg); //使用修改的设置x坐标的函数来更新x坐标值;
+            set_y(n1, n2 / Rad_to_deg); //使用修改的设置y坐标的函数来更新y坐标值;
+        } else {
+            cout << "Incorrect 3rd argument to Vector() -- ";
+            cout << "vector set to 0\n";
+            x = y = 0.0;
+            mode = RECT;
+        }
+    }
+
+    void Vector::reset(double n1, double n2, Mode form) {
+        mode = form;
+        if (form == RECT) {
+            x = n1;
+            y = n2;
+        } else if (form == POL) {
+            set_x(n1, n2 / Rad_to_deg);
+            set_y(n1, n2 / Rad_to_deg);
+        } else {
+            cout << "Incorrect 3rd argument to Vector() -- ";
+            cout << "vector set to 0\n";
+            x = y = 0.0;
+            mode = RECT;
+        }
+    }
+
+    Vector::~Vector() {
+    }
+
+    void Vector::polar_mode() {
+        mode = POL;
+    }
+
+    void Vector::rect_mode() {
+        mode = RECT;
+    }
+
+    Vector Vector::operator+(const Vector &b) const
+    {
+        return Vector(x + b.x, y + b.y);
+    }
+
+    Vector Vector::operator-(const Vector &b) const
+    {
+        return Vector(x - b.x, y - b.y);
+    }
+
+    Vector Vector::operator-() const
+    {
+        return Vector(-x, -y);
+    }
+
+    Vector Vector::operator*(double n) const
+    {
+        return Vector(n * x, n * y);
+    }
+
+    Vector operator*(double n, const Vector &a)
+    {
+        return a * n;
+    }
+
+    std::ostream &operator<<(std::ostream &os, const Vector &v)
+    {
+        if (v.mode == Vector::RECT)
+        {
+            os << "(x,y) = (" << v.x << ", " << v.y << ")";
+        }
+        else if (v.mode == Vector::POL)
+        {
+            os << "(m,a) = (" << v.magval() << ", ";
+            os << v.angval() * Rad_to_deg << ")";
+        }
+        else
+        {
+            os << "Vector object mode is invalid";
+        }
+        return os;
+    }
+}
 
 ```

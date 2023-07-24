@@ -395,7 +395,7 @@ DAG? 0
 
 可以知道程序各部分运行正常。
 
-### 算法优化
+### 按权重排序
 
 对于“找出经过所有这些指定点的权重之和的前TopN条路径”，即“top k”问题，常用堆数据结构来解决，对应C++中即为`priority_queue`。
 
@@ -455,7 +455,140 @@ DAG? 0
 
 可以看出路径已经被正确排序，问题得到解决。
 
+### 使用 hash
+
+注意到匹配路径是否符合要求的过程需要两层循环，时间复杂度比较高，所以考虑使用 hash，将原本`O(n^2)`的时间复杂度降低到`O(n)`。
+
+元素筛选，第一反应想到效率非常高的 **bloom filter**，最初的设想是将中间路径点设置为 bloom filter，然后匹配一遍寻得的所有路径，由于 bloom filter 的特性，所需要的路径一定在经过初级筛选之后的子集中，接着对子集做精确的匹配，就能找到筛选结果。
+而遍历路径时建立 hash map，再遍历中间节点，同时查询 hash map，时间复杂度也是O(n)。若图的顶点数目非常多，寻得的路径数量可能非常多时，可以研究一下是否使用 bloom filter 会减少程序运行时间。
+
+这里我们先不采用 bloom filter 的方式，留作以后与学长老师们讨论。
+
+```C++
+void Graph::DFS(int from, int to, std::vector<int> &pathpoint, std::priority_queue<Path> &result) {
+    __visited[from] = true;
+    if (from == to) { // path found
+        // ...
+        
+        // search if middle point in path
+        std::unordered_set<int> s;
+        for (auto point : p.pathpoint) {
+            s.emplace(point);
+        }
+        bool is_match = true;
+        for (auto m : pathpoint) {
+            if (s.find(m) == s.end()) {
+                is_match = false;
+            }
+        }
+
+        // ...
+    }
+
+    // ...
+}
+```
+
+
 ## Cmake
 
+文件目录结构为：
+```
+.
+├── CMakeLists.txt
+├── include
+│   └── graph.hpp
+├── main.cpp
+└── src
+    └── graph.cpp
+```
+
+`CMakeLists.txt`内容为：
+```CMake
+# 声明要求的cmake最低版本
+cmake_minimum_required(VERSION 3.15)
+
+# 声明一个cmake工程
+project(assignment1)
+
+# 打印相关消息
+MESSAGE(STATUS "my first cmake project")
+
+# 设置路径
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build)
+
+# 设置头文件路径
+include_directories(${PROJECT_SOURCE_DIR}/include)
+
+# 编译静态库
+add_library(graph STATIC ${PROJECT_SOURCE_DIR}/src/graph.cpp)
+
+# 编译可执行文件
+add_executable(${PROJECT_NAME} main.cpp)
+
+# 链接需要的库
+target_link_libraries(${PROJECT_NAME} graph)
+
+# gtest
+target_link_libraries(${PROJECT_NAME} libgtest.a libgtest_main.a pthread)
+
+# compile_commands.json中包含所有编译单元执行的指令
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# 打包功能
+set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+include(CPack)
+```
 
 ## Google test
+
+加入 GTest 的测试代码：
+```C++
+TEST(testCase, test0) {
+    Graph g(6);
+    
+    g.setEdge({
+        {0, 1, 5},
+        {0, 3, 4},
+        {0, 2, 5},
+        {1, 3, 1},
+        {2, 4, 7},
+        {3, 4, 2},
+        {3, 5, 7},
+        {4, 5, 1}
+    });
+    
+    EXPECT_EQ(g.findPath(0, 5, {3}).size(), 4);
+}
+
+int main(int argc, char ** argv) {
+    // google test
+    testing::InitGoogleTest(&argc, argv);
+    
+    return RUN_ALL_TESTS();
+}
+```
+
+执行如下指令：
+```shell
+mkdir build
+cd build
+cmake ..
+make
+./assignment1
+```
+
+运行结果如下：
+```
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from testCase
+[ RUN      ] testCase.test0
+[       OK ] testCase.test0 (0 ms)
+[----------] 1 test from testCase (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+```

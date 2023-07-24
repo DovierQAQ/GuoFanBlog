@@ -2,7 +2,7 @@
 title: 《C++ Primer Plus 第六版》学习笔记3 - 对象和类
 date: 2023-07-20 11:19:56
 updated: 2023-07-20 11:19:56
-cover:
+cover: cover.jpg
 tags:
     - C++
 categories:

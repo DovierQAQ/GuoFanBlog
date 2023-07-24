@@ -2,7 +2,7 @@
 title: 《C++ Primer Plus 第六版》学习笔记1 - 函数
 date: 2023-07-19 09:50:31
 updated: 2023-07-19 09:50:31
-cover:
+cover: cover.jpg
 katex: true
 tags:
     - C++

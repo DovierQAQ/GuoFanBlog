@@ -687,7 +687,7 @@ aside:
       link: https://github.com/DovierQAQ
   card_announcement:
     enable: true
-    content: 近期目标是探究用GPT来做RTS游戏的可能性！
+    content: 找时间把页面左下角的小狗做成我自己的 AI 数字人！
   card_recent_post:
     enable: true
     limit: 5 # if set 0 will show all

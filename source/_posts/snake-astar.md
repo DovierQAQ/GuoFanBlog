@@ -3,6 +3,7 @@ title: A*算法初探究及优化 - 自动解贪吃蛇
 date: 2023-04-01 10:46:14
 updated: 2023-04-01 10:46:14
 cover: cover.jpg
+sticky: 10
 tags:
     - Unity3D
     - C#

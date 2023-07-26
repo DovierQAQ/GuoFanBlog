@@ -33,7 +33,7 @@ Host pcl
 - 再次设置vscode的远程服务器，增加密钥路径，最终配置文件为：
 ```
 Host pcl
-  HostName 192.168.224.130
+  HostName 192.168.224.xxx
   User guofan
   IdentityFile /Users/guofan/.ssh/id_rsa
 ```

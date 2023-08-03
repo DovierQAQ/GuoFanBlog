@@ -12,6 +12,12 @@ categories:
     - 学习笔记
 ---
 
+{% note info flat %}
+### 目录
+{% post_link GAMES101-Resterization %}
+-> {% post_link GAMES101-Shading %}
+{% endnote %}
+
 ## Blinn-Phong Reflectance Model
 
 分为三部分：

@@ -6,7 +6,7 @@ cover: remote.png
 tags:
     - vscode
     - Google Test
-    - CMakeList
+    - CMake
 categories:
     - 经验总结
 ---

@@ -13,6 +13,19 @@ categories:
     - 算法研究
 ---
 
+{% note info flat %}
+### 目录
+{% post_link snake-astar %}
+-> {% post_link cpp-qt-astar %}
+{% endnote %}
+
+<div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;"><iframe 
+src="//player.bilibili.com/player.html?aid=999319742&bvid=BV1544y1w7PR&cid=1220569414&page=1&autoplay=false" 
+scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" 
+style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;"> </iframe></div>
+
+-----------------
+
 已知如下图地图，黑色表示障碍物无法通行，要求实现避障算法寻找从红色起点出发达到绿色终点的最优路径。
 
 ![](problem.jpg)

@@ -15,6 +15,12 @@ categories:
     - 算法研究
 ---
 
+{% note info flat %}
+### 目录
+-> {% post_link snake-astar %}
+{% post_link cpp-qt-astar %}
+{% endnote %}
+
 <div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;"><iframe 
 src="//player.bilibili.com/player.html?aid=781920467&bvid=BV1b24y1j7gq&cid=1078820031&page=1&autoplay=false" 
 scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" 

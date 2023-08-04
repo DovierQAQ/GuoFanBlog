@@ -215,63 +215,63 @@ database -[hidden]- scripts
 ***: operation 
 <back:lightgreen>（各式点工具）</back>;
 ****: iCTS 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（时钟树综合 Clock Tree Synthesis）</back>;
 ****: iDRC 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（设计规则检查 Design Rule Check）</back>;
 ****: iECO 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（工程修改 Engineering Change Order）</back>;
 ****: iFP 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（布局规划 Floorplan）</back>;
 ****: iIR 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（阻抗比 Impedance Ratio）</back>;
 ****: iLO 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（布局优化 Layout Optimization）</back>;
 ****: iMP 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（宏单元布局 Macro Placement）</back>;
 ****: iNO 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（噪声优化 Noise Optimization）</back>;
 ****: iPDN 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（电源分配网络 Power Delivery Network）</back>;
 ****: iPL 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（布局和布线 Place & Route）</back>;
 ****: iPW 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（功耗 Power）</back>;
 ****: iRT 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（布线 Routing）</back>;
 ****: iSTA 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（静态时序分析 Static Timing Analysis）</back>;
 ****: iTM 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（时序裕量 Timing Margin）</back>;
 ****: iTO 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（拓扑优化 Topology Optimization）</back>;
 ***: platform 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（平台相关）</back>;
 ****: data_manager 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（数据管理）</back>;
 ****: evaluation 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（评估）</back>;
 ****: file_manager 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（文件管理）</back>;
 ****: flow 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（流程管理）</back>;
 ****: report 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（报告管理）</back>;
 ****: service 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（提供的服务）</back>;
 ****: tool_manager 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（工具管理）</back>;
 ***: solver 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（一些算法，剥离出来方便后续替换或优化）</back>;
 ****: clustering 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（聚类）</back>;
 ****: partition 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（划分）</back>;
 ****: qudratic_programming 
-<back:lightgreen>（）</back>;
-****: steiner_porest 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（二次规划）</back>;
+****: steiner_forest 
+<back:lightgreen>（斯坦纳树）</back>;
 ****: two_pin_routing 
-<back:lightgreen>（）</back>;
+<back:lightgreen>（两点路径布线）</back>;
 ***: third_party 
 <back:lightgreen>（一些第三方依赖）</back>;
 ***: utility 
@@ -283,7 +283,7 @@ database -[hidden]- scripts
 ****: report 
 <back:lightgreen>（报告生成组件）</back>;
 ****: stdBase 
-<back:lightgreen>（）</back>;
+<back:orange>（）</back>;
 ****: string 
 <back:lightgreen>（给 c-style 字符串增加一些 API）</back>;
 ****: tcl 

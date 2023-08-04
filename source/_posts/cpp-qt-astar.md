@@ -38,7 +38,7 @@ style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;"> </ifram
 [工程模板](https://github.com/filipdutescu/modern-cpp-template.git)
 
 {% note info flat %}
-兴权老师给了一个思考题：如果不是两个点，是三个点甚至更多的点，需要寻找一条最短路径连起来，应该怎么做？
+兴权老师给了一个思考题：如果不是两个点，是三个点甚至更多的点，需要寻找一条最短路径连起来，应该怎么做？（调研发现有一个算法：斯坦纳树）
 {% endnote %}
 
 ## 问题分析

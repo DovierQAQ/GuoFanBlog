@@ -94,6 +94,50 @@ pathfinder.showPath(path);
 
 ## 程序设计
 
+### 算法学习
+
+A\* 算法寻路流程图如下：
+{% plantuml %}
+@startuml
+
+start
+:将起点结点置于 open list（优先队列）;
+while (open list 非空？) is (yes)
+    :取出 open list 的堆顶元素作为当前结点;
+    :设置当前结点状态为 closed;
+    if (当前结点是终点？) then (yes)
+        :从终点开始，
+        使用头插法逐个将父结点置于双端队列中;
+        :返回双端队列中的路径;
+        stop
+    else
+        :获得当前结点的邻居结点;
+        while (遍历邻居结点)
+            if (邻居结点可行走且状态不为 closed？) then (yes)
+                :计算从当前结点到邻居结点的新 g 值;
+                if (新 g 值更小或者邻居结点不在 open list？) then (yes)
+                    :设置邻居结点的 g, h, 父结点指针;
+                    :设置邻居结点状态为 open;
+                    :将邻居结点加入 open list;
+                    note left
+                        因为更新了结点，
+                        所以需要将结点再次加入优先队列，
+                        否则如果结点的 f 值变小了，
+                        可能不会被及时弹出，
+                        导致寻得的路径非最优
+                    endnote
+                endif
+            endif
+        endwhile
+    endif
+endwhile
+stop
+
+@enduml
+{% endplantuml %}
+
+### 程序结构
+
 {% plantuml %}
 @startuml
 

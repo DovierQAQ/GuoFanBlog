@@ -149,6 +149,8 @@ categories:
 - 光学临近校正：OPC, optical proximity correction
 - 移相掩膜：PSM, phase shifted mask
 - 次分辨率辅助图形：sub-resolution assistance feature
+- 布局布线：P&R, place-and-route
+- 零线负载模型：zero WLM, wire-load model
 
 ## 第一章 - 集成电路物理设计方法
 
@@ -198,3 +200,98 @@ EDA 工具通常采用两种模型计算天线比率：
 - 积累检查模型（cumulative checking model）
 
 目前布线工具解决天线效应是采用插入天线二极管和中断金属连线跳换布线层（layer hopping）两种方法实现。
+
+## 第三章 - 布图规划和布局
+
+### 布图规划
+
+内容：
+- 对芯片大小（die size）的规划
+- 芯片设计输入输出（I/O）单元的规划
+- 大量硬核或模块（hard core, block）的规划
+
+目标：
+- 确定芯片面积
+- 确保时序的收敛
+- 保证芯片的稳定
+- 满足布线的要求
+
+在布图规划和布局工具中，对采用倒置封装对面积 I/O（area I/O）的摆放通过以下步骤完成：
+- 在 LEF 技术文件中，需要用 CLASS PAD 和 PAD SITE 将 I/O 单元定义为特定的类型。
+- 将 flip-chip 的 I/O 单元库导入设计。
+- 加载版图规划文件和 I/O 单元设置文件。
+- 放置 flip-chip 的 I/O 单元。
+
+### 电源规划
+
+供电网络设计主要内容有以下几个部分：
+- 电源连接关系的定义，又称为 global net connect。
+- 芯片核内（core）部分的电源环设计，又称为 power ring。
+- 芯片内所包含的硬核（如 RAM、ROM 以及 IP、COT 模块等）的电源环设计。
+- 芯片核内纵横交错的电源网格的设计，又称为 power stripe。
+- 芯片的供电单元与电源环的连接，又称为 I/O 单元 power。
+- 芯片内部电源网格和硬核电源环连接部分的设计，又称为 ring pins。
+- 将标准单元的供电网格与核电源网格总连接的设计，又称为 followpins。
+- I/O 供电单元电源环的设计，又称为 I/O 单元 power ring。
+
+数字与模拟混合供电芯片中，在布局前一般需作如下几点考虑和处理：
+- 模拟模块的工作区域一般放置于芯片的某个角落。
+- 模拟区域需要单独供电，给模拟信号供电的 I/O 单元应放在模拟模块边上，尽量缩短供电线路的长度。
+- 在模拟模块的周围布置保护隔离环（guarding ring），从而实现数字信号和模拟信号电源之间的隔离。
+
+多电源供电中，为每一个电压域指定一个合适的模板来进行设计步骤：
+- 创建芯片核心电源环。
+- 为每一个电压域和硬宏单元模块创建一个模块的电源环。
+- 为宏单元（硬核）模块创建模块电源环。
+
+多个电源供电时，不同的工作电压之间需要插入电平转换单元（VLS, voltage level shifter），其步骤如下：
+- 读入相应的电平转换单元表。
+- 在内部电压域网络上插入电平转换单元。
+
+### 布局
+
+在布局完成后需要评估的目标主要有：拥（congestion）程度的评估、延迟和时序预估、供电预估。
+
+从步骤上布局可以分成三个阶段：
+- 结群布局（clustering）
+- 全局布局（global placement）
+- 详细布局（detail placement）
+
+结群需要用的算法：
+- Breuer's algorithm
+- 模拟退火（simulated annealing）
+- K-L 算法（Kernigham-Lin algorithm）
+- F-M 算法（Fiduccia-Mattheyses algorithm）
+- 比率分割算法（Ratio-Cut algorithm）
+
+全局布局（包括布图规划过程）中主要采用的算法有：
+- 最小切割法算法（他是 Breuer 的算法的直接应用）
+- 模拟退火算法（它是 Kirkpatrick 的算法的直接应用）
+- 贪婪算法（greedy algorithm）
+- 力向量算法（force directed algorithm）
+- NRG 算法
+- HALO 算法
+
+从以布局的对象为目标出发，布局优化算法可分为以下三种：
+- 纯标准单元布局算法（standard-cell placement）
+- 模块布局算法（macro-cell placement）
+- 混合单元布局算法（mixed-size placement）
+
+从优化的目标上优化算法可分为以下三类：
+- 基于布线拥塞的布局优化算法（routability-driven placement）
+- 基于时序的布局算法（timing-driven placement）
+- 预防噪声的布局算法（crossstalk-aware placement）
+
+### 扫描链重组
+
+有两种方法实现：本地化重组（native reordering）和基于扫描 DEF 的重组。
+
+能采用本地化重组方法的扫描链特征如下：
+- 扫描链上连接的触发器属于单一时钟域，且由单一边沿触发。
+- 扫描链上的触发器跨越多个时钟域，不同的时钟域由数据锁存器件分开。
+- 共享功能输出信号链。
+- 带有两端口逻辑单元的扫描链，该扫描链中串联了两端口的逻辑单元，一般为缓冲器。
+
+### 物理设计网表文件
+
+## 第四章 - 时钟树综合

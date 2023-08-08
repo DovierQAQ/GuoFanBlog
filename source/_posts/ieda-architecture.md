@@ -19,7 +19,7 @@ categories:
 当时画的，问题一大堆的版图：
 ![](asic.jpg)
 
-## 开源 EDA 软件
+## iEDA
 
 {% note warning flat %}
 TODO 介绍

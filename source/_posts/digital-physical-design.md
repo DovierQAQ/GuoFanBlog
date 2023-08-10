@@ -351,4 +351,77 @@ EDA 工具通常采用两种模型计算天线比率：
 
 ## 第六章 - 静态时序分析
 
+在时序分析前，首先要对芯片的物理版图设计进行包括电阻、电感（以及互感）、电容参数（RLC）的提取，再进行延时计算。
+
+电阻提取在深亚微米的应用很直观，它通常将连线以线宽的方式分割成若干小方块，并以每个小方块（per square，$1/ \square$）为计算单位；再将一段很长的线分成若干段（考虑数据存储和计算速度），然后直接应用欧姆定律。
+
+互连线（interconnect wire）的单位长度的总电容$C_{wire}$由三部分组成：面积（area）电容$C_A$、侧面（lateral）电容$C_L$和边缘（fringe）电容$C_F$。
+
+3D 电容提取算法，包括快速的 FastCap 算法和更快的 QuickCap 算法，这些方法包括浮动随机行走取样，也通称为线长解决方案（field solver）。
+
+RC 提取的结果是用标准寄生参数格式（SPF）文件来表示的，它们由几种不同的格式，即 DSPF、RSPF 和 SPEF。
+- SPF-Standard Parasitic Format (File)，详细标准寄生参数格式（文件）
+- DSPF-Detailed Standard Parasitic Format (File)，详细标准寄生参数格式（文件）
+- RSPF-Reduced Standard Parasitic Format (File)，简化标准寄生参数格式（文件）
+- SPEF-Standard Parasitic Exchange Format (File)，标准寄生参数交换格式（文件）
+
+静态时序分析贯穿于设计过程的各个阶段：从 RTL 逻辑综合，到布局、时钟树综合、布线和反标（back annotation），直到出带（tape-out）。每一次分析的目的都是为了检查当前设计的结果是否满足设计的约束条件。
+
+时序分析有若干种类型。建立（setup）和保持（hold）是两种普通类型的时序分析，具体分析时也常常叫做时序检查（timing check）。
+
+{% plantuml %}
+@startuml
+
+scale 50 as 150 pixels
+
+binary "CLK" as clk
+
+@0
+clk is high
+
+@50
+clk is low
+
+@100
+clk is high
+
+@150
+clk is low
+
+clk@80 <-> @100 : setup
+clk@100 <-> @120 : hold
+
+@enduml
+{% endplantuml %}
+
+- Setup：在时钟作用前沿（或后沿）到达**前**，同步输入信号（D）必须保持稳定的那段时间以使信号不至于丢失。
+- Hold：在时钟作用前沿（或后沿）到达**后**，同步输入信号（D）必须保持稳定的那段时间以使信号不至于丢失。
+
+出现 setup 违例的解决办法要么让时钟变慢（增长周期），要么缩短数据路径的延迟。
+出现 hold 违例的解决办法要么增长数据路径的延迟，要么加快时钟到达。
+
+在时序分析中，我们要定义与时钟相关的输入输出环境参数。它们包括以下几种常见的类型：
+- 确定驱动（set_drive）
+- 确定驱动单元（set_driving_cell）
+- 确定负载（set_load）
+- 确定扇出（set_fanout）
+
+与时钟相关的一些特性参数：
+- 时钟插入延时（clock insertion delay，也称作 clock latency）
+- 时钟不确定性（clock uncertainty，或时钟抖动 clock jitter）
+- 时钟转换时间（clock transition）
+
+造成时序违例的因素可以是一种或多种：
+- 由于系统设计的复杂性和抽象性，有些约束可能是不合理的，或许根本不可能实现；
+- 也有一些约束在逻辑综合时可能依据了不合理的 WLM，所产生的网表在物理实施时不可能实现；
+- 有时因为设计太大，由于互连线的相互牵制引起时序违例；
+- 设计者做了不合理的布局，使得物理实施后的设计时序无法满足要求。
+
+原地优化在优化过程中采用多种方法来解决时序违例的问题。最常见的方法有以下几种：
+- 挑选并替换驱动能力大小不一样的逻辑单元（re-sizing）
+- “克隆”（cloning）法，即复制一个逻辑单元去分担负载
+- 添加“缓冲器”（buffering）或用缓冲器去替代两个反相器
+
+## 第七章 - 功耗分析
+
 

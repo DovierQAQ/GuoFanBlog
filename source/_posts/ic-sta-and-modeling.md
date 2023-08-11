@@ -156,4 +156,66 @@ clk@300 <-> @350 : 移除时间
 
 ## 第四章 - 时序信息库文件
 
+### 非线性延时模型
+
+- 库组
+    - 工艺属性（technology attribute）
+    - 延时模型属性（delay_model attribute）
+    - 延时和转换斜率属性（Delay and Slew Attributes）
+- 因子
+- 输入电压组
+- 输出电压组
+- 功耗查找表模板组
+- 操作条件组
+- 线负载组
+- 延时查找表模板组
+- 单元组
+    - 面积属性（area attribute）
+    - 单元标记属性（cell_footprint attribute）
+    - 集成时钟门单元属性（clock_gating_integrated_cell attribute）
+    - 不触碰属性（dont_touch attribute）
+    - 不使用属性（dont_use attribute）
+    - 时钟门单元属性（is_clock_gating_cell attribute）
+- 引脚组
+    - 电容属性
+    - 带时钟门的时钟引脚属性（clock_gate_clock_pin attribute）
+    - 时钟门使能引脚属性（clock_gate_enable_pin attribute）
+    - 时钟门观察引脚属性（clock_gate_obs_pin attribute）
+- 触发器组
+    - 时钟有效属性（clocked_on attribute）
+    - 下个状态属性（next_state attribute）
+    - 清零属性（clear attribute）
+    - 位置属性（preset attribute）
+- 逻辑状态表组
+- 电源引脚组
+    - 电源地类型属性（pg_type attribute）
+    - 电源名称属性（voltage_name attribute）
+- 延时组
+    - 相关引脚属性（related_pin attribute）
+    - 延时逻辑状态属性（timing_sense attribute）
+    - 延时类型属性（timing_type attribute）
+- 单元上拉延时组
+- 单元下拉延时组
+- 上拉转换组
+- 下拉转换组
+- 上拉约束组
+- 下拉约束组
+- 内部功耗组
+- 哑阈漏流功耗组
+    - 模式属性（mode attribute）
+    - 时刻属性（when attribute）
+    - 值属性（value attribute）
+
+### 复合电流源延时模型
+
+- 输出电流查找表模板组
+- 输出上拉电流组
+- 输出下拉电流组
+- 向量组
+- 接收电容组
+    - 模式属性（mode attribute）
+    - 时刻属性（when attribute）
+
+## 第五章 - 静态时序分析的基本方法
+
 

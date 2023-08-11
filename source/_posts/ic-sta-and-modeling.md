@@ -29,4 +29,97 @@ categories:
 
 ## 第二章 - 静态时序分析的基础知识
 
+信号线延时的定义为：逻辑信号从逻辑门单元的输出端口考试在互连线上传播到下一级逻辑输入端口的延时。
+
+### 建立时间和保持时间
+
+{% plantuml %}
+
+@startuml
+
+concise "Input" as con
+binary "CLK" as bin
+
+@0
+con is Idle
+bin is low
+
+@100
+con is Input
+
+@150
+bin is high
+
+@200
+con is Idle
+
+@300
+bin is low
+
+bin@100 <-> @150 : setup
+bin@150 <-> @200 : hold
+
+@enduml
+
+{% endplantuml %}
+
+### 恢复时间和移除时间
+
+{% plantuml %}
+
+@startuml
+
+binary "set/reset" as signal
+binary "CLK" as clk
+
+@0
+clk is low
+signal is low
+
+@100
+signal is high
+
+@150
+clk is high
+
+@300
+clk is low
+
+@350
+signal is low
+
+clk@100 <-> @150 : 恢复时间
+
+clk@300 <-> @350 : 移除时间
+
+@enduml
+
+{% endplantuml %}
+
+时序单元的时序分析必须满足输入信号脉宽大于最小脉冲宽度的要求，否则时序分析结果就可能与实际情况不一致，主要原因之一就是无法保证时序单元实现正常的逻辑功能。
+
+### 时序路径
+
+- 触发器到触发器：表示始发点为时序单元的时钟输入端和终止点为数据输入端之间的时序路径。由于其始发点和终止点在设计内部都是可见的，所以也称为内部时序路径。
+- 触发器到输出端：表示从始发点为时序单元时钟输入端口到终止点为组合逻辑单元的输出端口之间的时序路径。由于组合逻辑单元的输出端口可能连接到设计之外的其他模块的输入端口，所以称为外部时序路径。
+- 输入端到触发器：表示从始发点为组合逻辑单元的输入端口到终止点为时序单元数据输入端之间的时序路径。由于组合逻辑单元的输入端口来自设计之外的其他输出端口，所以也称为外部时序路径。
+- 输入端到输出端：表示从始发点为组合逻辑单元输入端口到终止点为组合逻辑单元输出端口之间的时序路径。因为没有经过任何时序单元，所以该种类型的时序路径比较特殊，其时序分析方法也不同。
+
+时钟的时序特性主要分为时钟周期（clock period）、时钟占空比（clock duty cycle）、时钟转换时间（clock transition time）、时钟延迟（clock latency）、时钟偏斜（clock skew）和时钟抖动（clock jitter）。
+
+静态时序分析是基于时序弧（timing arc）数据的时序分析。时序弧是用来描述两个节点延时信息的数据，时序弧的信息一般分为连线延时和单元延时。连线延时是单元输出端口和扇出网络负载之间的延时信息；单元延时是单元输入端口到输出端口到延时信息。
+单元延时中的时序弧分为基本时序弧和约束时序弧两类，其中约束时序弧用来表示输入端口之间存在的时序约束信息。
+基本时序弧包括组合时序弧（combinational arc）、边沿时序弧（edge arc）、复位清零时序弧（preset and clear arc）、三态使能时序弧（three state enable and disable arc）等。
+约束时序弧包括建立时序弧（setup arc）、保持时序弧（hold arc）、恢复时序弧（recovery arc）、移除时序弧（removal arc）和脉宽时序弧（width arc）等。
+
+### PVT 环境
+
+- TYP (Typical)
+- BCF (Best-Case Fast)
+- WCS (Worst-Case Slow)
+- ML (maximal leakage)
+- TL (typical leakage)
+
+## 第三章 - 单元库时序模型
+
 

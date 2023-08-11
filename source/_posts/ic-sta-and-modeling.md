@@ -3,6 +3,7 @@ title: 《集成电路静态时序分析与建模》学习笔记
 date: 2023-08-10 16:25:45
 updated: 2023-08-10 16:25:45
 cover: cover.jpg
+katex: true
 tags:
     - EDA
     - STA
@@ -121,5 +122,38 @@ clk@300 <-> @350 : 移除时间
 - TL (typical leakage)
 
 ## 第三章 - 单元库时序模型
+
+- 快速时序模型（quick time model）
+- 接口逻辑模型（interface logic model）
+- 抽取时序模型（extracted timing model）
+- Stamp 模型
+- Synopsys 工艺库模型：时序信息文件 (.lib)，主要分为以下三种：线性延时模型（linear delay model）、非线性延时模型（non-linear delay model）和复合电流源延时模型（composite current source delay model, CCS 延时模型）。
+
+### 延时计算模型
+
+- CMOS 通用延时计算模型：$D_{total} = D_I + D_S + D_C + D_T$
+- CMOS 非线性延时计算模型：$D_{total} = D_{cell} + D_C$
+
+### 互连线计算模型
+
+- 集总 C 模型
+- 集总 RC 模型
+- 分布 RC 模型：L 模型、$\pi$ 模型、T 模型
+- 传输线模型
+
+在 RTL 代码综合阶段进行静态时序分析时，由于互连线还没有物理信息，因此可以通过调用线负载模型来估算实际物理实现后的线负载大小，用于静态时序分析时计算互连线延时。
+
+### 时序信息建模基本方法
+
+时序信息建模的简化操作：
+- 时序弧串联合并
+- 时序弧并联合并
+
+时序信息建模基本方法：
+- 基于独立的时序提取方法
+- 基于独立与相关混合的时序信息提取方法
+- 基于完全相关的时序信息提取方法
+
+## 第四章 - 时序信息库文件
 
 

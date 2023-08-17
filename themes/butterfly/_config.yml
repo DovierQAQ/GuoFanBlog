@@ -992,9 +992,9 @@ categoryBar:
     - 探究、优化
     - 开发、项目
   cover:
-    - url('/img/cupcat1.jpg')
-    - url('/img/cupcat2.jpg')
-    - url('/img/cupcat3.jpg')
+    - url('/img/learn.webp')
+    - url('/img/algorithm.webp')
+    - url('/img/experience.webp')
     - '#abcdef' # HEX格式色值需要用''包裹，不然会被识别成注释
     - rgba(45,67,89,0.7)
     - linear-gradient(rgba(0, 0, 0, 0.4) 25%, rgba(200,16 , 16, 0) 100%)

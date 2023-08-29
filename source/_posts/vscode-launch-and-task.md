@@ -1,5 +1,5 @@
 ---
-title: 远程调试C++程序 - 配置vscode的launch.json和task.json
+title: 远程调试C++程序 - 配置vscode的launch.json和tasks.json
 date: 2023-08-28 10:11:20
 updated: 2023-08-28 10:11:20
 cover: debug.webp

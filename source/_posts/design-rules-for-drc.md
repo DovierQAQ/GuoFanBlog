@@ -2,8 +2,8 @@
 title: EDA流程学习 - DRC中各种设计规则
 date: 2023-08-29 11:24:24
 updated: 2023-08-29 11:24:24
-cover:
-hide: true
+cover: Layout9.png
+hide: 
 tags:
     - EDA
     - DRC

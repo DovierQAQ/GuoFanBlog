@@ -1,7 +1,9 @@
 ---
 title: About
+type: "about"
 date: 2023-03-27 19:27:57
 comments: false
+aside: false
 ---
 
 {% timeline 2022 %}
@@ -76,13 +78,17 @@ RTL8710Bn 模组 2020 标准固件项目 - 唯一开发
 -----------------------------------
 
 {% flink %}
-- class_name: 博客
+- class_name: 我的
   class_desc: 冲呀！
   link_list:
     - name: GuoFan's Blog
       link: https://guofan.fun/
       avatar: map_cover.jpg
       descr: 略略略
+    - name: AI Assistant
+      link: https://chat.guofan.fun/
+      avatar: map_cover.jpg
+      descr: 喵喵喵
 {% endflink %}
 
 ![](map_cover.jpg)

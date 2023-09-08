@@ -91,7 +91,7 @@ rule {
 - 矩形距离
 - 对边距离
 
-<image src="distance.webp" height="300px" />
+<img src="distance.webp" height="300px" />
 
 `ABUT >0<90`的含义：不能 touch，不能斜着伸出。
 - touch: {% inlineImg abut_greater_than_0.webp 100px %}

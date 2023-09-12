@@ -206,19 +206,19 @@ In mathematics, sometimes we need to enclose expressions in brackets, braces or 
 
 You might notice that if you use any of these to typeset an expression that is vertically large, like
 
-(\frac{a}{x} )^2
+`(\frac{a}{x} )^2`
 the parentheses don't come out the right size:
 
 $$(\frac{a}{x})^2$$
 If we put \left and \right before the relevant parentheses, we get a prettier expression:
 
-\left(\frac{a}{x} \right)^2
+`\left(\frac{a}{x} \right)^2`
 gives
 
 $$\left(\frac{a}{x} \right)^2$$
 For systems of equations or piecewise functions, use the cases environment:
 
-f(x) = \begin{cases} x^2 & x \ge 0 \\ x & x < 0 \end{cases}
+`f(x) = \begin{cases} x^2 & x \ge 0 \\ x & x < 0 \end{cases}`
 
 which gives
 
@@ -226,16 +226,16 @@ $$f(x) = \begin{cases} x^2 & x \ge 0 \\ x & x < 0 \end{cases}$$
 
 In addition to the \left and \right commands, when doing floor or ceiling functions with fractions, using
 
-\left\lceil\frac{x}{y}\right\rceil
+`\left\lceil\frac{x}{y}\right\rceil`
 
-and \left\lfloor\frac{x}{y}\right\rfloor
+and `\left\lfloor\frac{x}{y}\right\rfloor`
 
 gives both $\left\lceil\frac{x}{y}\right\rceil$ and $\left\lfloor\frac{x}{y}\right\rfloor$, respectively.
 
 
 And, if you type this
 
-\underbrace{a_0+a_1+a_2+\cdots+a_n}_{x}
+`\underbrace{a_0+a_1+a_2+\cdots+a_n}_{x}`
 
 Gives
 
@@ -243,7 +243,7 @@ $$\underbrace{a_0+a_1+a_2+\cdots+a_n}_{x}$$
 
 Or
 
-\overbrace{a_0+a_1+a_2+\cdots+a_n}^{x}
+`\overbrace{a_0+a_1+a_2+\cdots+a_n}^{x}`
 
 Gives
 

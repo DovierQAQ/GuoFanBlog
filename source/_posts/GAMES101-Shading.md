@@ -13,7 +13,7 @@ categories:
 ---
 
 {% note info flat %}
-### 目录
+**系列文章**
 {% post_link GAMES101-Resterization %}
 -> {% post_link GAMES101-Shading %}
 {% endnote %}

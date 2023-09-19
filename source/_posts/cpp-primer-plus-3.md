@@ -10,7 +10,7 @@ categories:
 ---
 
 {% note info flat %}
-### 目录：
+**系列文章**
 {% post_link cpp-primer-plus-1 %}
 {% post_link cpp-primer-plus-2 %}
 -> {% post_link cpp-primer-plus-3 %}

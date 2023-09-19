@@ -8,8 +8,15 @@ tags:
     - C++
     - 开源项目
 categories:
-    - 学习笔记
+    - 经验总结
 ---
+
+{% note info flat %}
+**系列文章**
+
+-> {% post_link ieda-architecture %}
+{% post_link ieda-idrc-code-reading %}
+{% endnote %}
 
 上大学的时候，教集成电路的老师就跟我们讲：“中国的芯片制造，除了光刻机，另一个被卡脖子的技术就是 EDA 软件。”
 这个课的课程设计，按照以往来说是老师布置一些题目，使用 EDA 软件绘制一个运算放大器，或者一个电源模块的版图之类的。

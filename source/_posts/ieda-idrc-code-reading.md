@@ -61,6 +61,9 @@ while (遍历所有 DrcNet)
     :查询 R-Tree，获得该 DrcRect 范围内
     routing rect 和 fixed rect 的数量;
     if (数量不大于 1？) then (yes)
+      note left
+        为什么？
+      endnote
       :使用 layer_id 和矩形大小查得 spacing 数值;
       :将 DrcRect 往外扩大这个数值的宽度，
       得到查询矩形;
@@ -92,12 +95,12 @@ while (遍历所有 DrcNet)
             if (查询到的结果为空？) then (yes)
               :获得受检矩形和邻居矩形的 PRL，
               查得它们需要满足的 PRL spacing;
-              if (两个矩形有正的 PRL) then (yes)
+              if (两个矩形有正的 PRL) then (no)
                 :检查角间距;
                 note left
                   x^2 + y^2 < spacing^2
                 endnote
-              else (no)
+              else (yes)
                 :检查 PRL spacing;
               endif
               if (发现 spacing 违例？) then (yes)
@@ -114,3 +117,7 @@ endwhile
 stop
 @enduml
 {% endplantuml %}
+
+发现的问题：
+1. 需要被跳过的条件中，检查了“是否被检查过”，实现方法是检查该 rect 是否在 list 中。但是被检查过的 rect 并没有被加入到这个 list 中。
+2. 

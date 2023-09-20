@@ -99,7 +99,7 @@ favicon: /img/favicon.ico
 
 # Avatar (頭像)
 avatar:
-  img: /img/cat.jpg
+  img: /img/bai.webp
   effect: false
 
 # Disable all banner image

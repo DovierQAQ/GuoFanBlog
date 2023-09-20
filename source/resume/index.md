@@ -6,7 +6,7 @@ aside: false
 top_img: false
 ---
 
-<img src="cat.jpg" style="width:150px; height:150px; border-radius:100%; overflow:hidden;"/>
+<img src="bai.webp" style="width:150px; height:150px; border-radius:100%; overflow:hidden;"/>
 
 <div style="overflow:auto; position:relative; top:-100px">
   <div style="float:left; width:50%;">

@@ -16,7 +16,7 @@ categories:
 ---
 
 {% note info flat %}
-### 目录
+**系列文章**
 -> {% post_link snake-astar %}
 {% post_link cpp-qt-astar %}
 {% endnote %}

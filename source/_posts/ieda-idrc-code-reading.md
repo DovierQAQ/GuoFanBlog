@@ -3,6 +3,7 @@ title: 开源EDA软件iEDA源码解析 - iDRC
 date: 2023-09-19 10:10:13
 updated: 2023-09-19 10:10:13
 cover:
+hide: true
 tags:
     - EDA
     - C++
@@ -10,6 +11,10 @@ tags:
 categories:
     - 经验总结
 ---
+
+{% note danger flat %}
+TODO: 文章草稿，不建议阅读
+{% endnote %}
 
 {% note info flat %}
 **系列文章**

@@ -63,7 +63,7 @@ while (遍历所有 DrcNet)
   :从 DrcNet 中取出所有矩形（DrcRect）;
   while (遍历所有 DrcRect)
     :从 DrcRect 中获得 layer_id;
-    :查询 R-Tree，获得该 DrcRect 范围内
+    :查询 R-Tree，获得包裹 DrcRect 的
     routing rect 和 fixed rect 的数量;
     if (数量不大于 1？) then (yes)
       note left
@@ -72,7 +72,7 @@ while (遍历所有 DrcNet)
       :使用 layer_id 和矩形大小查得 spacing 数值;
       :将 DrcRect 往外扩大这个数值的宽度，
       得到查询矩形;
-      :通过 R-Tree 查找该查询矩形区域内的所有
+      :通过 R-Tree 查找与该矩形交叠的所有
       routing rect 和 fixed rect;
       while (遍历这些 rect)
         if (该 rect 不需要被跳过检查？) then (yes)
@@ -86,8 +86,8 @@ while (遍历所有 DrcNet)
           :获得 DrcRect 和遍历到的 rect 之间的 span box;
           note left
             后面将这两个矩形分辨称为
-            1. 受检矩形
-            2. 邻居矩形
+            5. 受检矩形
+            6. 邻居矩形
           endnote
           if (发现短路违例？) then (yes)
             note left
@@ -97,6 +97,11 @@ while (遍历所有 DrcNet)
           else (no)
             :通过 R-Tree 查询所有在 span box 范围内的
             routing rect 和 fixed rect;
+            note left
+              四种谓词：
+              contains, overlaps,
+              covers, covered_by
+            endnote
             if (查询到的结果为空？) then (yes)
               :获得受检矩形和邻居矩形的 PRL，
               查得它们需要满足的 PRL spacing;

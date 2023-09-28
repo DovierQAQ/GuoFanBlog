@@ -17,6 +17,7 @@ categories:
 **系列文章**
 {% post_link snake-astar %}
 -> {% post_link cpp-qt-astar %}
+{% post_link 3d-astar %}
 {% endnote %}
 
 <div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;"><iframe 

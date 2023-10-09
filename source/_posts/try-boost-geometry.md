@@ -8,7 +8,7 @@ tags:
   - Boost
   - Geometry
 categories:
-  - 学习笔记
+  - 经验总结
 ---
 
 参考 [Boost 官方手册](https://www.boost.org/doc/libs/1_83_0/libs/geometry/doc/html/index.html)

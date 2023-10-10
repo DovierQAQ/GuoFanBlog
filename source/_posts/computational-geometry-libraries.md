@@ -18,7 +18,12 @@ categories:
 
 ### License
 
-> Distributed under the Boost Software License, Version 1.0.
+> Distributed under the `Boost Software License, Version 1.0`.
+
+### 特点
+
+- 易于使用，资料多、文档齐全。
+- 常见的几何操作都有，但更小众的需求可能不如 CGAL。
 
 ### 可视化调试
 
@@ -27,6 +32,59 @@ vscode 插件：Graphical Debugging
 使用方法：在 Debug 界面会有 GRAPHICAL WATCH 栏（图中左下角），在里面点击“+”号，输入变量名即可，效果如下：
 
 ![](graphical_debugging.webp)
+
+但由于 GDB 和 LLDB 不会输出变量的原始类型（例如使用了`typedef`关键字来定义类型名），所以需要告诉插件某个类型应该如何展示。方式就是在当前调试的项目根目录下建立`*.json`，文件名可以随意，然后填入如下格式的内容：
+
+```json
+{
+  "name": "graphicaldebugging",
+  "language": "cpp",
+  "types": [
+    {
+      "type": "point",
+      "kind": "point",
+      "system": "cartesian",
+      "coordinates": {
+        "x": "$this.m_values[0]",
+        "y": "$this.m_values[1]"
+      }
+    },
+    {
+      "type": "box",
+      "kind": "box",
+      "points": {
+        "min": "$this.m_min_corner",
+        "max": "$this.m_max_corner"
+      }
+    },
+    {
+      "type": "value",
+      "kind": "box",
+      "points": {
+        "min": "$this.m_min_corner",
+        "max": "$this.m_max_corner"
+      }
+    }
+  ]
+}
+```
+
+那么我如下的类型定义就可以被识别：
+
+```C++
+namespace bg = boost::geometry;
+namespace bgi = boost::geometry::index;
+
+typedef bg::model::point<float, 2, bg::cs::cartesian> point;
+typedef bg::model::box<point> box;
+typedef box value;
+```
+
+关于 json 文件的详细内容可以参考[插件仓库下的 json 文件](https://github.com/awulkiew/graphical-debugging-vscode/blob/master/resources/boost.json)。
+
+进一步来说 json 文件的放置位置也不一定是项目根目录，扩展设置里面可以设置 json 文件的寻找目录，以及可视化展示的投影方式，如下图：
+
+<img src="graphical_debugging_settings.webp" height="500px"/>
 
 ----------------------------------------------
 
@@ -49,6 +107,11 @@ vscode 插件：Graphical Debugging
 
 > GEOS is open source software available under the terms of GNU Lesser General Public License (`LGPL`).
 
+### 特点
+
+- 主要专注于地理空间数据。
+- 提供的更多的是空间操作和算法，但基本的几何操作也都有。
+
 ----------------------------------------------
 
 ## CGAL
@@ -61,7 +124,13 @@ vscode 插件：Graphical Debugging
 
 ### License
 
-> CGAL is distributed under a dual license scheme, that is under the `GNU GPL/LGPL` open source licenses, as well as under commercial licenses.
+> CGAL is distributed under a dual license scheme, that is under the `GNU GPL/LGPL` open source licenses, as well as under `commercial licenses`.
+
+### 特点
+
+- 几何操作非常全面，功能强大。
+- 学习成本相对较高。
+- 有 License 的限制。
 
 ----------------------------------------------
 
@@ -74,6 +143,11 @@ vscode 插件：Graphical Debugging
 ### License
 
 > libigl is primarily `MPL2` licensed (FAQ). Some files contain third-party code under other licenses. We’re currently in the processes of identifying these and marking appropriately.
+
+### 特点
+
+- 主要专注的是离散几何和计算机图形学领域。
+- 更多的提供的是三维模型的 mesh 网格处理。
 
 ----------------------------------------------
 
@@ -93,7 +167,11 @@ vscode 插件：Graphical Debugging
 
 ### License
 
-> Latest Version (starting with 4.0) are Licensed under the BSD 3 clause license
+> Latest Version (starting with 4.0) are Licensed under the `BSD 3 clause` license
+
+### 特点
+
+- 主要专注于多边形网格处理和拓扑编辑。
 
 ----------------------------------------------
 
@@ -117,3 +195,9 @@ vscode 插件：Graphical Debugging
 - [Polyline Reduction](https://www.geometrictools.com/Documentation/PolylineReduction.pdf)
 - [Tessellation of a Unit Sphere Starting with an Inscribed Convex Triangular Mesh](https://www.geometrictools.com/Documentation/TessellateSphere.pdf)
 - [Triangulation by Ear Clipping](https://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf)
+
+### 特点
+
+- 专注于计算机图形学。
+- 易于使用。
+- 相对来说功能可能更有限。

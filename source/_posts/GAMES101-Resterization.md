@@ -17,6 +17,7 @@ categories:
 **系列文章**
 -> {% post_link GAMES101-Resterization %}
 {% post_link GAMES101-Shading %}
+{% post_link GAMES101-Geometry %}
 {% endnote %}
 
 20年的时候，好朋友推荐了这个课程给我，简直是神仙课程！当时每天下班后就再花一个多小时来听一节课，陆陆续续听完了。最近打算重温一下这系列课程，顺便补上笔记。

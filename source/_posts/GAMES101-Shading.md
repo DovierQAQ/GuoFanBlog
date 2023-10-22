@@ -16,6 +16,7 @@ categories:
 **系列文章**
 {% post_link GAMES101-Resterization %}
 -> {% post_link GAMES101-Shading %}
+{% post_link GAMES101-Geometry %}
 {% endnote %}
 
 ## Blinn-Phong Reflectance Model

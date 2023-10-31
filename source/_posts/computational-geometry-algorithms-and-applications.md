@@ -1,5 +1,5 @@
 ---
-title: 《计算几何——算法与应用（第三版）》学习笔记
+title: 《计算几何——算法与应用（第三版）》学习笔记1 - 扫描线
 date: 2023-09-05 15:58:17
 updated: 2023-09-05 15:58:17
 cover: cover.webp
@@ -9,6 +9,15 @@ tags:
 categories:
     - 学习笔记
 ---
+
+{% note info flat %}
+**系列文章**
+-> {% post_link computational-geometry-algorithms-and-applications %}
+{% post_link computational-geometry-algorithms-and-applications-1 %}
+**番外篇**
+{% post_link computational-geometry-libraries %}
+{% post_link try-boost-geometry %}
+{% endnote %}
 
 ## 计算几何：导言
 
@@ -365,7 +374,3 @@ $$
 
 > 定理 4.15
 > 平面上任意一组共$n$个点的最小包围圆，可以在$O(n)$的期望运行时间内计算出来，而且为此需要的空间在最坏情况下不会超过线性规模。
-
-## 正交区域查找：数据库查询
-
-

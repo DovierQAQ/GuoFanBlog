@@ -10,6 +10,15 @@ categories:
   - 经验总结
 ---
 
+{% note info flat %}
+**系列文章**
+{% post_link computational-geometry-algorithms-and-applications %}
+{% post_link computational-geometry-algorithms-and-applications-1 %}
+**番外篇**
+-> {% post_link computational-geometry-libraries %}
+{% post_link try-boost-geometry %}
+{% endnote %}
+
 ## Boost.Geometry
 
 - [官方网站](https://www.boost.org/doc/libs/1_83_0/libs/geometry/doc/html/index.html)

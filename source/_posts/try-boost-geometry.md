@@ -11,6 +11,15 @@ categories:
   - 经验总结
 ---
 
+{% note info flat %}
+**系列文章**
+{% post_link computational-geometry-algorithms-and-applications %}
+{% post_link computational-geometry-algorithms-and-applications-1 %}
+**番外篇**
+{% post_link computational-geometry-libraries %}
+-> {% post_link try-boost-geometry %}
+{% endnote %}
+
 参考 [Boost 官方手册](https://www.boost.org/doc/libs/1_83_0/libs/geometry/doc/html/index.html)
 
 > Boost.Geometry contains a dimension-agnostic, coordinate-system-agnostic and scalable kernel, based on concepts, meta-function and tag dispatching. On top of that kernel, algorithms are built: area, length, perimeter, centroid, convex hull, intersection (clipping), within (point in polygon), distance, envelope (bounding box), simplify, transform, and much more. The library supports high precision arithmetic numbers, such as ttmath.

@@ -12,7 +12,7 @@ categories:
     - 学习笔记
 ---
 
-> 以下参考：[VLSI Voncepts](https://www.vlsi-expert.com/2014/12/design-rule-check.html)
+> 以下参考：[VLSI Concepts](https://www.vlsi-expert.com/2014/12/design-rule-check.html)
 
 ## 一些DRC中用到的几何术语
 

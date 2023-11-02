@@ -16,6 +16,7 @@ categories:
 **系列文章**
 {% post_link GAMES101-Resterization %}
 -> {% post_link GAMES101-Shading %}
+{% post_link GAMES101-Geometry %}
 {% endnote %}
 
 ## Blinn-Phong Reflectance Model
@@ -233,6 +234,8 @@ mipmap（图来自维基百科）:
   * 定义噪声解析式，用三维空间中的坐标可以求出噪声值
 - 用来记录已经算好的信息
   * 环境光遮蔽纹理
+- 三维纹理
+  * 体积渲染
 
 ------------------------------------------
 

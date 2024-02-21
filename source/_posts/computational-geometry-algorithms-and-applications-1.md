@@ -1,5 +1,5 @@
 ---
-title: 《计算几何——算法与应用（第三版）》学习笔记2 - 空间索引
+title: 《计算几何——算法与应用（第三版）》学习笔记2 - 空间索引（第5-7章）
 date: 2023-10-24 15:11:38
 updated: 2023-10-24 15:11:38
 cover: cover.webp
@@ -135,5 +135,126 @@ TODO:思路
 - Chazelle 提出了修改后的层次化区域树，是解决二维区域查找问题最有效的数据结构，空间复杂度为$O(n(logn/loglogn)^{d-1})$。
 - 如果查找区域某侧无界，则使用优先查找树（priority search tree），空间复杂度是线性的，时间复杂度为$O(logn)$。
 - ……
+
+--------------------------------------------------------------------------------------------------------
+
+## 点定位：找到自己的位置
+
+点定位查询（point location query）：给定一张地图以及由坐标指定的一个查询点 q，在图中找到 q 所处的子区域。
+
+### 点定位及梯形图
+
+对于原始的字区域划分，在每个顶点处引入一条垂线，利用这些垂线可以将平面划分为若干垂直的条带（slab）。条带按照 x 坐标有序，所以只需 $O(logn)$ 的时间就可以得到待查询点所处的条带。条带内的直线按照 y 坐标有序，所以也只需 $O(logn)$ 的时间就可以知道待查询点所处的区域。
+如果存下每个条带的坐标，以及每个条带中的所有线段，则空间复杂度为 $O(n^2)$。
+
+<img src="slab-cut.webp" height="150px"/>
+
+条带可以视作一个子区域划分，即原子区域划分的细分（reginement），条带中的每一张面，都是梯形（trapezoid）、三角形或者类似于梯形的无界面。
+
+若平面上两条线段的交为空，或者只相交于它们的一个共同端点，我们都称它们是互不相交的（non-crossing）。对于平面的任何一个子区域划分，所有边都互不相交。
+
+我们先研究一般性位置线段集（a set of line segments in general position）：由 n 条线段构成的集合 S，其中的线段互不相交，都包含在一个包围框（bounding box）R 中，而且任何两个端点都不处于同一条垂线上。
+
+经过 S 中每条线段的左、右端点，向上方和下方各发出一条垂直射线；在碰到 S 中的另一条线段或 R 的边界后，射线终止，这样得到的叫做 S 的梯形图 $T(S)$，也称作 S 的垂直分解（vertical decomposition）或者梯形分解（trapezoidal decomposition）。由 p 发出的这两条垂直延长线，分别称为 p 的上垂直延长线（upper vertical extension）和下垂直延长线（lower vertical extension）。
+
+<img src="trapezoidal-decomposition.webp" height="150px"/>
+
+> 引理 6.1
+> 任意给定一个一般性位置线段集 S，在 S 的梯形图中，每张面都有一到两条垂直的侧边，同时有且仅有两条非垂直的侧边。
+
+> 引理 6.2
+> 由任意 n 条处于一般性位置的线段组成的集合 S，其梯形图 $T(S)$ 至多含有 6n+4 个顶点，至多含有 3n+1 个梯形。
+
+如果两个梯形 $\triangle$ 和 $\triangle'$ 接合于某条垂直边左右，我们就称它们是相邻的（adjacent）。由于做了一般性假设，所以梯形最多只有四个梯形相邻，分别为左上方邻居（upper left neighbour）、左下方邻居（lower left neighbour）、右上方邻居（upper right neighbour）和右下方邻居（lower right neighbour）。
+
+对于每个梯形，无需存储其顶点坐标，而是以 $top(\triangle)$、$bottom(\triangle)$、$leftp(\triangle)$ 和 $rightp(\triangle)$ 来表示，其定义分别如下：
+
+<img src="trapezoidal.webp" height="150px"/>
+
+### 随机增量式算法
+
+（randomized incremental algorithm），用于构造梯形图 $T(S)$ 和用于点定位的数据结构 $D$。
+
+$D$ 叫做查找结构（search structure），是一幅有向无环图（directed acyclic graph - DAG）。其中有唯一的根节点，梯形唯一对应于叶子节点。每个内部节点的出度是 2。所有内部节点分为两类：x-节点和 y-节点。每个 x-节点都被标记为 S 中某条线段的一个端点；而每个 y-节点都被标记为某条线段。
+
+查询点 q 位置时，从根节点出发，每个节点都要判断 q 在其两侧的哪一侧（对于 x-节点来说判断左右，对于 y-节点来说判断上下），直到找到某个叶子节点，即点 q 所处的梯形。
+
+<img src="randomized-incremental-algorithm.webp" height="200px"/>
+
+示例中白色圆形为 x-节点，灰色圆形为 y-节点，白色方块为叶子节点。
+
+算法的步骤如下：
+
+1. 将子区域划分的线段打乱，以包围盒 R 为最初的梯形图 $T(S_0)$, 以包围盒 R 作为 $D_0$ 的根节点，也是叶子节点。
+2. 遍历所有线段 $s_i$，对当前的 $D_{i-1}$ 查询线段左端点 $p_i$ 所处的梯形 $\triangle$。
+   - 如果 $p_i$ 落在梯形图中已有的端点上，则有两种情况：
+   - 如果落在某条垂线上，则需将该点往右稍做移动，即选中该垂线右边的梯形；
+   - 如果落在某条线段上，则需比较两线段的斜率以确定选择上下哪个梯形。
+3. 利用此梯形寻找其右邻居（右上、右下）中与线段相交的梯形。
+   - 若 $rightp(\triangle)$ 在线段上方，则选中右上邻居，反之亦然。
+4. 更新 $T(S)$ 和 $D$。
+   - 将找到的梯形从 $T(S)$ 中删除，替换成被 $s_i$ 切割后的若干梯形。
+   - 将 $D$ 中对应于 $\triangle$ 的那匹叶子替换成一棵切割后的小树。
+5. 如果线段跨过了多个梯形，还需考虑梯形的合并。
+
+<img src="randomized-incremental-algorithm2.webp" height="450px"/>
+
+算法的期望性能（expected performance）：
+
+> 定理 6.3
+> 对于**由处于一般性位置的**任意 n 条线段构成的集合 S，可以在 $O(nlogn)$ 的期望时间（expected time）内，计算出 S 的梯形图 $T(S)$ 以及与之对应的查找结构 $D$。该查找结构的期望规模（expected size）为 $O(n)$；对任何待查询点 q，期望查询时间（expected query time）为 $O(logn)$。
+
+这里所指的期望值，仅仅是针对算法能够做出的各种随机选择而言的平均值，而不是对所有可能输入进行平均。因此，不存在坏的输入——也就是说，对由 n 条线段组成的任何输入，该算法的期望运行时间都是 $O(nlogn)$。
+
+最大期望查询时间（expected maximum query time）也是 $O(logn)$。
+
+> 推论 6.4
+> 给定由任意 n 条边构成的一个平面子区域划分 S。可在 $O(nlogn)$ 期望时间内，构造出一个期望规模为 $O(n)$ 的数据结构；借助该结构，对任一待查询点的点定位查找，都可以在 $O(logn)$ 期望时间内完成。
+
+### 退化情况处理
+
+消除前文“一般性假设”的手段。
+
+符号变换（symbolic transformation）用于消除“不同端点不会落在同一条垂线上”的假设。
+
+思路是将坐标系进行一个小角度的旋转，但可能会有计算精度问题。所以使用“剪切变换”（shear transformation）的的仿射变换方法，是一种符号扰动（symbolic perturbation）方法。
+
+<img src="shear-transformation.webp" height="200px"/>
+
+经过这种变换，所有垂线都将成为斜率为 ${1 \over \varepsilon}$ 的直线。只要找到足够小的 $\varepsilon>0$，能使得经过剪切变换之后，各输入点在 x 方向的次序不变算法就能正常工作。
+
+> 定理 6.5
+> 对于由任意 n 条线段构成的集合 S，可以在 $O(nlogn)$ 的期望时间（expected time）内，计算出 S 的梯形图 $T(S)$ 以及与之对应的查找结构 $D$。该查找结构的期望规模（expected size）为 $O(n)$；对任何待查询点 q，期望查询时间（expected query time）为 $O(logn)$。
+
+### $^*$尾分析
+
+虽然最大查询时间可能很长，但这种情况概率很低。高概率上界（high-probability bound）。
+
+> 引理 6.6
+> 任意给定由 n 条互不相交的线段组成的一个集合 S，一个待查询点 q，以及一个参数 $\lambda>0$。则在 $D$ 上对 q 进行查找时，其查找路径上的节点数目超过 $3\lambda ln(n+1)$ 的概率，不会超过 ${1 \over (n+1)^{\lambda ln1.25 - 1}}$。
+
+> 引理 6.7
+> 任意给定由 n 条互不相交的线段组成的一个集合 S，以及一个参数 $\lambda>0$。则在 $D$ 中，查找路径的最大长度超过 $3\lambda ln(n+1)$ 的概率，不会超过 ${2 \over (n+1)^{\lambda ln1.25 - 3}}$。
+
+> 定理 6.8
+> 任意给定由 n 条边组成的一个平面子区域划分。必然存在支持对 S 进行点定位查询的一个数据结构，它只占用 $O(n)$ 的存储空间，而且在最坏情况下查找时间不超过 $O(logn)$。
+
+### 注释及评论
+
+点定位有很多方法：
+- Edelsbrunner 等人基于线段树（segment tree）和分散层叠（factional cascading）等技术提出的链方法（chain method）；
+- Kirkpatrick 提出的三角形细分法（triangle reginement method）；
+- Sarnak 和 Tarjan 以及 Cole 基于持续性（persistency）的方法；
+- Mulmuley 提出的随机增量式算法。
+
+动态点定位问题（dynamic point location）中，允许通过增加或删除边，对子区域划分本身进行（动态的）修改。
+
+{% note flat warning %}
+TODO: 高于二维的点定位问题。
+{% endnote %}
+
+--------------------------------------------------------------------------------------------------------
+
+## Voronoi 图：邮局问题
 
 

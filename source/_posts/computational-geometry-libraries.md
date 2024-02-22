@@ -17,6 +17,7 @@ categories:
 **番外篇**
 -> {% post_link computational-geometry-libraries %}
 {% post_link try-boost-geometry %}
+{% post_link try-boost-polygon %}
 {% endnote %}
 
 ## Boost.Geometry

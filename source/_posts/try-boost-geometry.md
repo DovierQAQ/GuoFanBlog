@@ -18,6 +18,7 @@ categories:
 **番外篇**
 {% post_link computational-geometry-libraries %}
 -> {% post_link try-boost-geometry %}
+{% post_link try-boost-polygon %}
 {% endnote %}
 
 参考 [Boost 官方手册](https://www.boost.org/doc/libs/1_83_0/libs/geometry/doc/html/index.html)

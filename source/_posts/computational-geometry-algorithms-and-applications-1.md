@@ -17,6 +17,7 @@ categories:
 **番外篇**
 {% post_link computational-geometry-libraries %}
 {% post_link try-boost-geometry %}
+{% post_link try-boost-polygon %}
 {% endnote %}
 
 ## 正交区域查找：数据库查询

@@ -9,7 +9,8 @@ menu:
   Tags: /tags/ || fas fa-tags
   Categories: /categories/ || fas fa-folder-open
   Demo || fas fa-gamepad:
-    SnakeDesktop: /webapp/snakedesktop/ || fas fa-window-minimize
+    Snake Desktop: /webapp/snakedesktop/ || fas fa-window-minimize
+    Three Body Problem: /webapp/three-body-problem/ || fas fa-rotate
   # List||fas fa-list:
   #   Music: /music/ || fas fa-music
   #   Movie: /movies/ || fas fa-video

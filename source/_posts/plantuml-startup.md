@@ -14,7 +14,8 @@ categories:
 
 1. vscode：[官方网站](https://code.visualstudio.com/)
 2. 插件：vscode 中搜索插件 PlantUML 并进行安装，需要注意的是，如果使用 ssh 远程编辑，则还需在 remote 端安装此插件
-3. graphviz：由于 PlantUML 是在 graphviz 基础上运行的，所以需要下载并安装 graphviz（[下载页面](https://graphviz.org/download/)）。如果不想本地安装，也有[在线网页](https://www.plantuml.com/plantuml/uml/SyfFKj2rKt3CoKnELR1Io4ZDoSa70000)进行图形输出。
+4. graphviz：由于 PlantUML 是在 graphviz 基础上运行的，所以需要下载并安装 graphviz（[下载页面](https://graphviz.org/download/)）。如果不想本地安装，也有[在线网页](https://www.plantuml.com/plantuml/uml/SyfFKj2rKt3CoKnELR1Io4ZDoSa70000)进行图形输出。
+3. java环境：graphviz 的运行需要 java 环境，[下载java](https://www.java.com/en/download/)。或者 linux 环境下直接 `sudo apt install openjdk-17-jdk`。
 
 ## 开始编辑
 

@@ -7,6 +7,7 @@ tags:
     - 智能车
     - 嵌入式
     - CV
+    - 竞赛
 categories:
     - 经验总结
 ---

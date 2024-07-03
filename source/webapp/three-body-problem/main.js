@@ -53,8 +53,8 @@ else
 
   function getMousePositionIn3D(event) {
     let mouse3D = new t.Vector3(
-      (event.clientX / window.innerWidth) * 2 - 1,
-      -(event.clientY / window.innerHeight) * 2 + 1,
+      ((event.clientX - sceneOffset.x) / window.innerWidth) * 2 - 1,
+      -((event.clientY - sceneOffset.y) / window.innerHeight) * 2 + 1,
       0.5
     );
     mouse3D.unproject(camera);
@@ -233,7 +233,7 @@ else
           let relativeVelocity = ballData.velocity.clone();
           let speed = relativeVelocity.dot(collisionNormal);
   
-          let velocityChange = collisionNormal.multiplyScalar(-2 * speed * 0.8);
+          let velocityChange = collisionNormal.multiplyScalar(-2 * speed * 0.99);
           ballData.velocity.add(velocityChange);
   
           let overlap = minDistance - distance;
@@ -246,8 +246,6 @@ else
 
       ballData.acceleration.set(0, 0, 0);
     });
-
-    console.log('Balls:', balls);
 
 		renderer.render(scene, camera);
 		requestAnimationFrame(render);

@@ -7,6 +7,7 @@ let camera, scene, renderer, world;
 let near, far;
 let pixR = window.devicePixelRatio ? window.devicePixelRatio : 1;
 let cubes = [];
+let balls = [];
 let sceneOffsetTarget = {x: 0, y: 0};
 let sceneOffset = {x: 0, y: 0};
 
@@ -50,6 +51,17 @@ else
 		}
 	};
 
+  function getMousePositionIn3D(event) {
+    let mouse3D = new t.Vector3(
+      (event.clientX / window.innerWidth) * 2 - 1,
+      -(event.clientY / window.innerHeight) * 2 + 1,
+      0.5
+    );
+    mouse3D.unproject(camera);
+    mouse3D.z = 0;
+    return mouse3D;
+  }
+
 	function init ()
 	{
 		initialized = true;
@@ -63,6 +75,11 @@ else
 			render();
 			window.addEventListener('resize', resize);
 		}, 500)	
+
+    document.addEventListener('click', (event) => {
+      let mouse3D = getMousePositionIn3D(event);
+      createBallAtPosition(mouse3D.x, mouse3D.y);
+    });
 	}
 
 	function setupScene ()
@@ -127,8 +144,8 @@ else
 			let c = new t.Color();
 			c.setHSL(i * .1, 1.0, .5);
 
-			let s = 100;// + i * 50;
-			let cube = new t.Mesh(new t.BoxGeometry(s, s, s), new t.MeshBasicMaterial({color: c , wireframe: true}));
+			let s = 50;// + i * 50;
+			let cube = new t.Mesh(new t.SphereGeometry(s, 8, 8), new t.MeshBasicMaterial({color: c , wireframe: true}));
 			cube.position.x = win.shape.x + (win.shape.w * .5);
 			cube.position.y = win.shape.y + (win.shape.h * .5);
 
@@ -144,10 +161,23 @@ else
 		if (!easing) sceneOffset = sceneOffsetTarget;
 	}
 
+  function createBallAtPosition(x, y) {
+    console.log('Creating ball at position:', x, y);
+    let ballGeometry = new t.SphereGeometry(20, 4, 4);
+    let ballMaterial = new t.MeshBasicMaterial({color: 0xffffff, wireframe: true});
+    let ball = new t.Mesh(ballGeometry, ballMaterial);
+    ball.position.set(x, y, 0);
+    world.add(ball);
+    console.log('Added ball to scene at position:', ball.position);
+    let ballData = {mesh: ball, velocity: new t.Vector3(), acceleration: new t.Vector3()};
+    balls.push(ballData);
+    console.log('Current number of balls:', balls.length);
+    return ball;
+  }
 
 	function render ()
 	{
-		let t = getTime();
+		let time = getTime();
 
 		windowManager.update();
 
@@ -169,7 +199,7 @@ else
 		{
 			let cube = cubes[i];
 			let win = wins[i];
-			let _t = t;// + i * .2;
+			let _t = time;// + i * .2;
 
 			let posTarget = {x: win.shape.x + (win.shape.w * .5), y: win.shape.y + (win.shape.h * .5)}
 
@@ -178,6 +208,46 @@ else
 			cube.rotation.x = _t * .5;
 			cube.rotation.y = _t * .3;
 		};
+
+    balls.forEach(ballData => {
+      let totalForce = new t.Vector3(0, 0, 0);
+      cubes.forEach(cube => {
+        let direction = cube.position.clone().sub(ballData.mesh.position);
+        let distanceSquared = direction.lengthSq();
+        if (distanceSquared > 0) {
+          let strength = 500.0 / distanceSquared;
+          let force = direction.normalize().multiplyScalar(strength);
+          totalForce.add(force);
+        }
+      });
+  
+      ballData.acceleration.add(totalForce);
+
+      cubes.forEach(cube => {
+        let distanceVector = cube.position.clone().sub(ballData.mesh.position);
+        let distance = distanceVector.length();
+        let minDistance = cube.geometry.parameters.radius + ballData.mesh.geometry.parameters.radius;
+  
+        if (distance < minDistance) {
+          let collisionNormal = distanceVector.normalize();
+          let relativeVelocity = ballData.velocity.clone();
+          let speed = relativeVelocity.dot(collisionNormal);
+  
+          let velocityChange = collisionNormal.multiplyScalar(-2 * speed * 0.8);
+          ballData.velocity.add(velocityChange);
+  
+          let overlap = minDistance - distance;
+          ballData.mesh.position.add(collisionNormal.multiplyScalar(overlap));
+        }
+      });
+
+      ballData.velocity.add(ballData.acceleration);
+      ballData.mesh.position.add(ballData.velocity);
+
+      ballData.acceleration.set(0, 0, 0);
+    });
+
+    console.log('Balls:', balls);
 
 		renderer.render(scene, camera);
 		requestAnimationFrame(render);

@@ -1,0 +1,86 @@
+---
+title: AI Coding - 用 copilot + spec-kit 完成一个 IOS APP
+date: 2025-12-21 12:52:54
+updated: 2025-12-21 12:52:54
+cover:
+tags:
+    - IOS
+    - copilot
+    - agent
+    - spec-kit
+categories:
+    - 经验总结
+---
+
+2025 在 AI Coding 领域来说是飞速发展的一年，一路使用过来，感叹与AI成长之迅速。年初的时候还是蹬一步走一步的自行车呢，到年底已经变成可以设置一个导航就自动开往目的地的自动驾驶汽车了。
+年初，claude 3.7 发布，借着 copilot 的 edit 模式，一周之内完整移植了一整套 1w 行左右的代码，当时看着编辑器里面每秒冒出好几行代码的速度，同事们纷纷过来录像分享。这一典型案例也被后续分享到了全公司。
+cline、roo code 等 vscode 插件的发布，agent 时代正式到来，这一期间我已经逐渐把 ai agent 当作一个实习生使用了，为每个项目仓库建立了 memory-bank，简单的需求写好提示词直接运行。开好多个 vscode 窗口，并行跑好多开发任务。从这个时期开始，我已经基本不使用搜索引擎了，知识类的交互交给 chat，执行类的任务交给 agent。
+今年最重磅的事情我还是颁发给 claude code 和 qwen coder，一个是 coding 领域的王者 agent，另一个则物美价廉。任务来了，首先描述一遍需求，让 agent 先试一试，如果效果还可以，就让它接着干，不然就我自己上。但是 token 总归是要收费的，申请了好几次提额之后，使用上也慢慢变得收敛。
+最近，github 推出了 copilot-cli，也冒出了很多提示词工具，例如 spec-kit、open-spec、bmad 等等，这又改变了 agent 的使用方式，以前是提前写好尽可能详细的提示词，让 agent 去执行，如果有描述不到位的地方，大模型会自己脑补。现在是前期利用工具，把提示词变得完美，再让大模型在一个没有歧义的提示词环境中去发挥。
+
+前几年玩动森，得知花卉杂交符合孟德尔定律时，觉得非常有趣，课本中冷冰冰的知识，在一天天的期待中逐个应验，相当有成就感。当时每天必定要上线浇花、摆了好多栅栏，防止发生基因不纯的杂交、用纯种基因来验证杂交基因……上学时做任何一个实验都没有这么认真。最终花了半个月，终于培育出了纯种的蓝色玫瑰！
+后来好朋友香菜看到国外独立开发者做的 IOS 水族箱小组件，神奇的话题就此融合，我们何不做一个符合孟德尔杂交定律实验的，美观实用的桌面小组件呢！于是在今年在三月份，我已经借助当时的 copilot 力量，搭建了一个原型 demo，但由于没有时间系统学习 swift-ui，而当时的 agent 水平又不能让我完全不操作源码，所以 demo 出来之后新增 feature 的过程推进得就很慢。
+
+<mark>是时候，拿出一个早就想要做的项目，尝试一下 1 产品 + 1 开发 + 1 agent 团队的模式，完整实现一个有趣的应用了！</mark>
+
+## 环境搭建
+
+### copilot for xcode
+
+copilot 最完整的用法，本来是在 vscode 中内置的应用，或者是 vscode + copilot-cli，这都逃不开用 vscode 来编辑代码。可是 IOS APP 开发偏偏使用 xcode 体验要比 vscode 要好，经过一番搜索，得知 copilot 也有对 xcode 的支持：[CopilotForXcode](https://github.com/github/CopilotForXcode?tab=readme-ov-file)
+
+home brew 安装得太慢了，我使用下载 dmg 文件的方式安装的，安装好后只需当作一个普通应用打开、登录，之后如果 xcode 打开了某个工作区，copilot 窗口就可以正常使用了。
+
+### spec-kit
+
+目前的大模型还处在尽可能具体理解用户提示词的阶段，容易被用户言语中的某些词汇引导出倾向性。这无可厚非，如果用户是有意为之，大模型便能够因此给出更准确的输出。但是现实情况是，每个人的语言习惯不一样，有些可能是无意间带入的词汇，也会被大模型当作重点来对待。在大模型还没有进化出理解人类的潜台词之前，利用工具或是查漏补缺，或是引入经验提示词的方式，先生成详细具体没有歧义的提示词，再让大模型去工作，也就能尽可能避免大模型朝错误方向努力。
+
+最近了解的 spec-kit、open-spec、bmad 等工具都有类似的功能，其原理可以简单理解为：1. 让 agent 做角色扮演，只针对自己职责范围做输出；2. 通过预设+问答的方式，提前生成好针对当前项目的提示词。
+而这些工具也有自己擅长的领域，例如 open-spec 擅长在已有的项目上增加 feature、bmad 擅长处理多 agent 协作，能很好完成一个大型项目。这里选择 spec-kit 的原因是它擅长从 0 开始搭建一个软件，且不会像 bmad 一样复杂。
+
+安装过程参考的是 [spec-kit 仓库文档](https://github.com/github/spec-kit)。
+
+1. 安装 uv `curl -LsSf https://astral.sh/uv/install.sh | sh`
+2. 安装 spec-kit `uv tool install specify-cli --from git+https://github.com/github/spec-kit.git`
+
+*首次配环境，我还是选择自己手动。后续遇到这类问题，我肯定就是在 agent 的对话框里写上：“帮我安装 spec-kit”。*
+
+## 文档工作
+
+现在网上充斥着各种顶着教程的名号介绍 spec-kit 的文章，实际照着使用下来，效果不一定好。文章都说初始化好项目之后，只要顺序执行 constitution、specify、plan、tasks、implement 就好，没有讲每一步具体在做什么，需要注意什么，甚至有的文章直接给出一个只有一行针对当前项目的提示词的 sub-agent，让大家去一键执行。AI 时代下，大家似乎变得有些浮躁，这是危险的信号，效率虽然上去了，但技能退步了，万一遇到 AI 无法正确处理的事项，脑子可能一时间转不过来。
+仔细想想，为什么 spec-kit 要设计这么多步骤呢？只执行一个命令，通过问答来一步到位生成所有文档不好吗？我理解是强制用户在每一步完成之后停下来，检查 AI 的输出，审阅并修改，之后或是重新执行当前过程，或是继续下一步。每一步都一定要是针对当前项目来实施的，例如在 agent 里面运行 `/speckit.constitution` 时，不要照抄示例 `/speckit.constitution Create principles focused on code quality, testing standards, user experience consistency, and performance requirements`，而是要考虑当前项目真正的原则，给后续的文档实施定一个跟当前项目有关的大基调。
+
+### 项目初始化
+
+由于我已经有一个 demo 了，在 demo 目录下运行 `specify init . --ai copilot`，注意，这是在终端里面运行，而不是在 agent 对话里面运行的。在简单几个问答之后，有如下输出
+
+![](specify-init.webp)
+
+如有必要，也可以运行 `specify check` 来检查工具有没有安装齐全。
+
+### constitution
+
+进入到 agent 界面，安装好 spec-kit 之后，CopilotForXcode 中便会出现 spec-kit 工具的命令。这个项目我选择的是 GPT-5.1 Codex，是 open ai 最新推出的针对编码调优的模型。
+
+![](spec-kit-in-copilot.webp)
+
+选 speckit.constitution，给我们的项目定义一下原则
+
+> /speckit.constitution 项目原则集中在代码质量、用户体验一致性、界面美观、交互直观、测试标准以及性能开销上
+
+agent 运行期间会有多次交互；会自动创建分支；会自动打开编辑好的文件，让用户审阅并修改
+
+![](constitution-edit.webp)
+
+这一过程生成了一个质量框架规格，内容大致分三个部分：
+1. 用户故事 1 - 一致性体验审核（优先级：P1）
+2. 用户故事 2 - 视觉协调性与交互预览（优先级：P2）
+3. 用户故事 3 - 质量与性能门禁（优先级：P3）
+
+第一条对应“代码质量、用户体验一致性”，第二条对应“界面美观、交互直观”，第三条对应“测试标准以及性能开销”。很好，符合我们当前项目的要求，无需修改，可以进行下一步。
+
+### specify
+
+现在可以开始描述需求了，我们应当跟 AI 讲一个故事，主要是讲背景和需求，也就是 what and why，无需关注技术栈。
+
+> /speckit.specify 
